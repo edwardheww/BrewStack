@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "node-cron": "^4.2.1",
+    "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11"
+  }
+}
