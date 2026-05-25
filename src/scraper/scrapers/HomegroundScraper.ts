@@ -19,8 +19,7 @@ export class HomegroundScraper extends Scraper {
             const name = await page.$$eval('h1', h1list => h1list.map(title => title.innerText)); // name
             const h4list = await page.$$eval('h4', h4list => h4list.map(trait => trait.innerHTML)); // farm | region/country | varietal | processing | roast
             const notes = await page.$$eval('em', emlist => emlist.map(text => (text.innerText.split('\n\n')[1] ?? '').split(', '))); // tasting notes
-            const b = new Bean('hg',
-                name[0] ?? '',
+            const b = new Bean(name[0] ?? '',
                 0,
                 url,
                 h4list[4] ?? '',

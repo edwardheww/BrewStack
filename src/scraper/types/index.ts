@@ -11,7 +11,6 @@ export class Roaster {
 }
 
 export class Bean {
-    id: string;
     name: string;
     price?: number;
     url?: string;
@@ -23,9 +22,8 @@ export class Bean {
     roasterId: string;
     roaster: Roaster;
 
-    public constructor(id: string, name: string, price: number, url: string, roastLevel: string, varietal: string,
+    public constructor(name: string, price: number, url: string, roastLevel: string, varietal: string,
         flavourNotes: string, processingMethod: string, roasterId: string, roaster: Roaster) {
-        this.id = id;
         this.name = name; //d
         this.price = price;
         this.url = url; //d 
@@ -40,11 +38,11 @@ export class Bean {
 
 export class ScrapeResult {
     name: string;
-    beans: Bean[];
+    beans: ScrapedBean[];
     scrapedAt: Date;
     errors: string[];
 
-    public constructor(name: string, beans: Bean[], scrapedAt: Date, errors: string[]) {
+    public constructor(name: string, beans: ScrapedBean[], scrapedAt: Date, errors: string[]) {
         this.name = name;
         this.beans = beans;
         this.scrapedAt = scrapedAt;
@@ -59,10 +57,10 @@ export type ScrapedBean = {
 
     //Bean info
     beanName: string;
-    price: number;
-    url: string;
-    roastLevel: string;
-    varietal: string;
-    flavourNotes: string;
-    processingMethod: string;
+    price?: number;
+    url?: string;
+    roastLevel?: string;
+    varietal?: string;
+    flavourNotes?: string;
+    processingMethod?: string;
 }

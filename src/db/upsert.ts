@@ -1,12 +1,12 @@
-import { prisma } from "./client";
+import { prisma } from "./client.js";
 
-import type { ScrapedBean } from "../scraper/types";
+import { type ScrapedBean } from "../scraper/types/index.js";
 
 export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
     const upsertedBeans = [];
 
     for (const scrapedBean of scrapedBeans) {
-        
+
         const { roasterName, website, ...beanData } = scrapedBean; // Save the roaster info and bean info separately
 
         // Upsert the roaster first
@@ -17,7 +17,7 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
         });
 
         const upsertedBean = await prisma.bean.upsert({
-            where: { 
+            where: {
                 url: beanData.url, // Use unique URL to identify the bean
             },
             update: {
