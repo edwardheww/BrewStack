@@ -1,6 +1,7 @@
 import { type Page, chromium } from 'playwright';
+import { Roaster, Bean, ScrapeResult } from '../types/index.js';
 
-abstract class Scraper {
+export abstract class Scraper {
     constructor(public roaster: Roaster) { }
 
     abstract scrape(): Promise<Bean[]>;

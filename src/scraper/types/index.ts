@@ -26,15 +26,15 @@ export class Bean {
     public constructor(id: string, name: string, price: number, url: string, roastLevel: string, varietal: string,
         flavourNotes: string, processingMethod: string, roasterId: string, roaster: Roaster) {
         this.id = id;
-        this.name = name;
+        this.name = name; //d
         this.price = price;
-        this.url = url;
-        this.roastLevel = roastLevel;
-        this.varietal = varietal;
-        this.flavourNotes = flavourNotes;
-        this.processingMethod = processingMethod;
-        this.roasterId = roasterId;
-        this.roaster = roaster;
+        this.url = url; //d 
+        this.roastLevel = roastLevel; //d
+        this.varietal = varietal; //d
+        this.flavourNotes = flavourNotes; //d
+        this.processingMethod = processingMethod; //d
+        this.roasterId = roasterId; //d
+        this.roaster = roaster; //d
     }
 }
 
