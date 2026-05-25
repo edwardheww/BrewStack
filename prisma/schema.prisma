@@ -12,7 +12,7 @@ model Roaster {
   id  String @id @default(cuid())
   name String @unique
   website String
-  
+
   beans Bean[]
 }
 
@@ -20,12 +20,12 @@ model Bean {
   // unique identifier for bean and its relation to roasters
   id String @id @default(cuid())
   name String @unique
-  price Float
-  url String @unique
-  roastLevel String
-  varietal String
-  flavourNotes String
-  processingMethod String
+  price? Float
+  url? String @unique
+  roastLevel? String
+  varietal? String
+  flavourNotes? String
+  processingMethod? String
 
   roasterId String
   roaster Roaster @relation(fields: [roasterId], references: [id])
