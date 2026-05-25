@@ -1,4 +1,4 @@
-class Roaster {
+export class Roaster {
     id: string;
     name: string;
     website: string;
@@ -10,7 +10,7 @@ class Roaster {
     }
 }
 
-class Bean {
+export class Bean {
     id: string;
     name: string;
     price?: number;
@@ -38,7 +38,7 @@ class Bean {
     }
 }
 
-class ScrapeResult {
+export class ScrapeResult {
     name: string;
     beans: Bean[];
     scrapedAt: Date;
@@ -50,4 +50,19 @@ class ScrapeResult {
         this.scrapedAt = scrapedAt;
         this.errors = errors;
     }
+}
+
+export type ScrapedBean = {
+    //Roaster info
+    roasterName: string;
+    website: string;
+
+    //Bean info
+    beanName: string;
+    price: number;
+    url: string;
+    roastLevel: string;
+    varietal: string;
+    flavourNotes: string;
+    processingMethod: string;
 }
