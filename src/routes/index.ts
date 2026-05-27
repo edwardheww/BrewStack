@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { prisma } from "../db/client.js";
+import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
+import { Roaster } from "../scraper/types/index.js";
+import { upsertScrapedBeans } from "../db/upsert.js";
 
 export const routes = Router();
 
@@ -39,3 +42,30 @@ routes.get("/roasters", async (_req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+// Temporary testing route: manually runs the scraper until the automatic scraper is finalized.
+routes.post("/scrape/homeground", async (_req, res) => {
+    try {
+        const roaster = new Roaster("hg",
+             "Homeground Coffee Roasters",
+              "https://homegroundcoffeeroasters.com/collections/coffees-specialty"
+            );
+
+        const hgscraper = new HomegroundScraper(roaster);
+        const result = await hgscraper.run();
+        const savedBeans = await upsertScrapedBeans(result.beans);
+
+        res.json({
+            message: "Scraping completed successfully",
+            scrapedCount: result.beans.length,
+            savedCount: savedBeans.length,
+            errors: result.errors,
+        });
+
+    }   catch (error) {
+        console.error("Error running hgScraper:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
