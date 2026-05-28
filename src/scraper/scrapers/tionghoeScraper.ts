@@ -61,28 +61,28 @@ export class TiongHoeScraper extends Scraper {
           .catch(() => '');
 
         const descriptionLines = await page
-            .$eval('.shopify-section--specification-table .prose p', el =>
+          .$eval('.shopify-section--specification-table .prose p', el =>
             Array.from(el.childNodes)
-            .map(node => node.textContent?.trim() ?? '')
-            .filter(text => text.length > 0)
-                )
-            .catch(() => []);
+              .map(node => node.textContent?.trim() ?? '')
+              .filter(text => text.length > 0)
+          )
+          .catch(() => []);
 
         const varietal =
-                descriptionLines
-                .find(line => line.toLowerCase().startsWith('varietal:'))
-                ?.replace(/Varietal:\s*/i, '')
-                .trim() ?? '';
+          descriptionLines
+            .find(line => line.toLowerCase().startsWith('varietal:'))
+            ?.replace(/Varietal:\s*/i, '')
+            .trim() ?? '';
 
         const processingMethod =
-                descriptionLines
-                .find(line => line.toLowerCase().startsWith('process:'))
-                ?.replace(/Process:\s*/i, '')
-                .trim() ?? '';
+          descriptionLines
+            .find(line => line.toLowerCase().startsWith('process:'))
+            ?.replace(/Process:\s*/i, '')
+            .trim() ?? '';
 
         const roastLevel =
           url.toLowerCase().includes('espresso-blend') ||
-          name.toLowerCase().includes('espresso blend')
+            name.toLowerCase().includes('espresso blend')
             ? 'Espresso'
             : 'Filter';
 

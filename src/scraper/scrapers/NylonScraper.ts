@@ -1,5 +1,6 @@
 import { Scraper } from './BaseScraper.js';
 import { Roaster, Bean } from '../types/index.js';
+import { profileEnd } from 'node:console';
 
 export class NylonScraper extends Scraper {
     constructor(roaster: Roaster) {
@@ -9,9 +10,11 @@ export class NylonScraper extends Scraper {
     override async scrape(): Promise<Bean[]> {
         const beans: Bean[] = [];
         const page = await this.openCatalogPage();
+        await page.waitForLoadState('networkidle');
         let productUrls = await page.$$eval('product-card', cards => cards.map(card => card.lastElementChild?.querySelector('a')?.getAttribute('href'))
             .filter(url => url != null)
             .map(sect => 'https://nylon.coffee' + sect));
+        console.log(productUrls);
 
 
         for (const url of productUrls) {

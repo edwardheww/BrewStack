@@ -2,6 +2,10 @@ import { prisma } from "./client.js";
 
 import { type ScrapedBean } from "../scraper/types/index.js";
 
+export function clearDb() {
+    prisma.bean.deleteMany({});
+}
+
 export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
     const upsertedBeans = [];
 
@@ -14,10 +18,6 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
             where: { name: roasterName },
             update: { website },
             create: { name: roasterName, website }
-        });
-
-        await prisma.bean.deleteMany({
-            where: { roasterId: roaster.id }
         });
 
         const upsertedBean = await prisma.bean.upsert({
@@ -45,7 +45,6 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
             }
         });
 
-        console.log(beanData.url);
         upsertedBeans.push(upsertedBean);
     }
     return upsertedBeans;

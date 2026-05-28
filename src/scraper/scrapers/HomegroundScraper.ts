@@ -15,11 +15,12 @@ export class HomegroundScraper extends Scraper {
     override async scrape(): Promise<Bean[]> {
         const beans: Bean[] = [];
         const page = await this.openCatalogPage();
-        await page.waitForSelector('product-card');
+        await page.waitForLoadState('networkidle');
         const productUrls = await page.$$eval('product-card', cards => cards.map(card => card.getAttribute('handle')).filter(url => url != null));
         for (let i = 0; i < productUrls.length; i++) {
             productUrls[i] = 'https://homegroundcoffeeroasters.com/products/' + productUrls[i];
         }
+        console.log(productUrls);
 
         for (const url of productUrls) {
             try {

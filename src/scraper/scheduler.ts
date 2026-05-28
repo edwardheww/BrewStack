@@ -2,7 +2,7 @@ import * as cron from 'node-cron';
 import { HomegroundScraper } from './scrapers/HomegroundScraper.js';
 import { NylonScraper } from './scrapers/NylonScraper.js';
 import { Roaster } from './types/index.js';
-import { upsertScrapedBeans } from '../db/upsert.js';
+import { clearDb, upsertScrapedBeans } from '../db/upsert.js';
 
 const scrapers = [
     new HomegroundScraper(new Roaster('hg', 'HomeGround', 'https://homegroundcoffeeroasters.com/collections/coffees-specialty')),
@@ -10,9 +10,10 @@ const scrapers = [
 ]
 
 async function runAllScrapers() {
+    clearDb();
+
     for (const scraper of scrapers) {
         try {
-            console.log((await scraper.run()).beans);
             await upsertScrapedBeans((await scraper.run()).beans);
         }
         catch (error: unknown) { console.log(error); }

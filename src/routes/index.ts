@@ -48,9 +48,9 @@ routes.get("/roasters", async (_req, res) => {
 routes.post("/scrape/homeground", async (_req, res) => {
     try {
         const roaster = new Roaster("hg",
-             "Homeground Coffee Roasters",
-              "https://homegroundcoffeeroasters.com/collections/coffees-specialty"
-            );
+            "Homeground Coffee Roasters",
+            "https://homegroundcoffeeroasters.com/collections/coffees-specialty"
+        );
 
         const hgscraper = new HomegroundScraper(roaster);
         const result = await hgscraper.run();
@@ -63,7 +63,7 @@ routes.post("/scrape/homeground", async (_req, res) => {
             errors: result.errors,
         });
 
-    }   catch (error) {
+    } catch (error) {
         console.error("Error running hgScraper:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
@@ -71,28 +71,28 @@ routes.post("/scrape/homeground", async (_req, res) => {
 
 
 routes.post("/scrape/tionghoe", async (_req, res) => {
-  try {
-    const roaster = new Roaster(
-      "th",
-      "Tiong Hoe",
-      "https://tionghoe.com/collections/roasted-beans"
-    );
+    try {
+        const roaster = new Roaster(
+            "th",
+            "Tiong Hoe",
+            "https://tionghoe.com/collections/roasted-beans"
+        );
 
-    const scraper = new TiongHoeScraper(roaster);
-    const result = await scraper.run();
+        const scraper = new TiongHoeScraper(roaster);
+        const result = await scraper.run();
 
-    console.log(result);
+        console.log(result);
 
-    const savedBeans = await upsertScrapedBeans(result.beans);
+        const savedBeans = await upsertScrapedBeans(result.beans);
 
-    res.json({
-      message: "Tiong Hoe scraping completed successfully",
-      scrapedCount: result.beans.length,
-      savedCount: savedBeans.length,
-      errors: result.errors,
-    });
-  } catch (error) {
-    console.error("Error running TiongHoeScraper:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+        res.json({
+            message: "Tiong Hoe scraping completed successfully",
+            scrapedCount: result.beans.length,
+            savedCount: savedBeans.length,
+            errors: result.errors,
+        });
+    } catch (error) {
+        console.error("Error running TiongHoeScraper:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
