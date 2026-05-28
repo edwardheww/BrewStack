@@ -26,6 +26,7 @@ model Bean {
   varietal String?
   flavourNotes String?
   processingMethod String?
+  updatedAt DateTime @updatedAt
 
   roasterId String
   roaster Roaster @relation(fields: [roasterId], references: [id])

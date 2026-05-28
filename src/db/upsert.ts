@@ -16,6 +16,10 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
             create: { name: roasterName, website }
         });
 
+        await prisma.bean.deleteMany({
+            where: { roasterId: roaster.id }
+        });
+
         const upsertedBean = await prisma.bean.upsert({
             where: {
                 url: beanData.url, // Use unique URL to identify the bean
@@ -41,6 +45,7 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
             }
         });
 
+        console.log(beanData.url);
         upsertedBeans.push(upsertedBean);
     }
     return upsertedBeans;
