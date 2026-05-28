@@ -3,6 +3,7 @@ import { prisma } from "../db/client.js";
 import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
 import { Roaster } from "../scraper/types/index.js";
 import { upsertScrapedBeans } from "../db/upsert.js";
+import { TiongHoeScraper } from "../scraper/scrapers/tionghoeScraper.js";
 
 export const routes = Router();
 
@@ -69,3 +70,29 @@ routes.post("/scrape/homeground", async (_req, res) => {
 });
 
 
+routes.post("/scrape/tionghoe", async (_req, res) => {
+  try {
+    const roaster = new Roaster(
+      "th",
+      "Tiong Hoe",
+      "https://tionghoe.com/collections/roasted-beans"
+    );
+
+    const scraper = new TiongHoeScraper(roaster);
+    const result = await scraper.run();
+
+    console.log(result);
+
+    const savedBeans = await upsertScrapedBeans(result.beans);
+
+    res.json({
+      message: "Tiong Hoe scraping completed successfully",
+      scrapedCount: result.beans.length,
+      savedCount: savedBeans.length,
+      errors: result.errors,
+    });
+  } catch (error) {
+    console.error("Error running TiongHoeScraper:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

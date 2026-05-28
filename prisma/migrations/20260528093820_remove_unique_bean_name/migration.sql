@@ -1,0 +1,10 @@
+-- DropIndex
+DROP INDEX "Bean_name_key";
+
+-- AlterTable
+ALTER TABLE "Bean" ALTER COLUMN "price" DROP NOT NULL,
+ALTER COLUMN "url" DROP NOT NULL,
+ALTER COLUMN "roastLevel" DROP NOT NULL,
+ALTER COLUMN "varietal" DROP NOT NULL,
+ALTER COLUMN "flavourNotes" DROP NOT NULL,
+ALTER COLUMN "processingMethod" DROP NOT NULL;

@@ -19,7 +19,7 @@ model Roaster {
 model Bean {
   // unique identifier for bean and its relation to roasters
   id String @id @default(cuid())
-  name String @unique
+  name String
   price Float?
   url String? @unique
   roastLevel String?
