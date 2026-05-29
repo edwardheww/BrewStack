@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import { routes } from "./src/routes/index.js";
 import { registerScraperCron } from "./src/scraper/scheduler.js";
@@ -8,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 
 // Allow the server to read JSON request
 app.use(express.json());
+
+// Allow cross-origin requests from the frontend
+app.use(cors());
 
 // Register all API routes from the routes file.
 app.use(routes);

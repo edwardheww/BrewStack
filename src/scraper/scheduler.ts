@@ -1,7 +1,7 @@
 import * as cron from 'node-cron';
 import { HomegroundScraper } from './scrapers/HomegroundScraper.js';
 import { NylonScraper } from './scrapers/NylonScraper.js';
-import { TiongHoeScraper } from './scrapers/tionghoeScraper.js';
+import { TiongHoeScraper } from './scrapers/TiongHoeScraper.js';
 import { Roaster } from './types/index.js';
 import { clearDb, upsertScrapedBeans } from '../db/upsert.js';
 
@@ -23,7 +23,7 @@ async function runAllScrapers() {
 }
 
 export function registerScraperCron() {
-    cron.schedule('0 */6 * * *', async () => {
+    cron.schedule('0 * * * *', async () => {
         console.log('Running daily scraping.');
         await runAllScrapers();
         console.log('Daily scraping complete.');

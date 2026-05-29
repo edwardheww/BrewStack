@@ -40,7 +40,6 @@ export class HomegroundScraper extends Scraper {
         for (let i = 0; i < productUrls.length; i++) {
             productUrls[i] = 'https://homegroundcoffeeroasters.com/products/' + productUrls[i];
         }
-        console.log(productUrls);
 
         for (const url of productUrls) {
             try {

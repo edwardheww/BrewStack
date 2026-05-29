@@ -3,8 +3,8 @@ import { prisma } from "../db/client.js";
 import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
 import { Roaster } from "../scraper/types/index.js";
 import { upsertScrapedBeans } from "../db/upsert.js";
-import { TiongHoeScraper } from "../scraper/scrapers/tionghoeScraper.js";
 import { NylonScraper } from "../scraper/scrapers/NylonScraper.js";
+import { TiongHoeScraper } from "../scraper/scrapers/TiongHoeScraper.js";
 
 export const routes = Router();
 

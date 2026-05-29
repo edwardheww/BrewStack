@@ -14,7 +14,6 @@ export class NylonScraper extends Scraper {
         let productUrls = await page.$$eval('product-card', cards => cards.map(card => card.lastElementChild?.querySelector('a')?.getAttribute('href'))
             .filter(url => url != null)
             .map(sect => 'https://nylon.coffee' + sect));
-        console.log(productUrls);
 
 
         for (const url of productUrls) {
