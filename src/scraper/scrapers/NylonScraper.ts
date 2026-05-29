@@ -22,11 +22,17 @@ export class NylonScraper extends Scraper {
             const notes = (await page.$$eval('div.flex.flex-col', list => list.map(node => node.textContent)
                 .filter(text => text.includes('Tasting Notes'))))[0]?.split('Tasting Notes\n')[1]?.trim();
             const name = await page.$eval('h1', heading => heading.getHTML());
+
+            const priceText = await page // price from website
+                .$eval('sale-price', el => el.textContent?.trim() ?? '')
+                .catch(() => '');
+            const price = Number(priceText.replace(/[^0-9.]/g, '')) || 0; // price to be stored in database, default to 0 if price is not found or cannot be parsed
+
             const others = await page.$$eval('div.feature-chart__value.prose', ls => ls.map(info => info.textContent));
 
             const b = new Bean(
                 name,
-                0,
+                price,
                 url,
                 others[7] ?? '',
                 others[2] ?? '',

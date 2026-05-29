@@ -7,6 +7,26 @@ function toTitleCase(str: string) {
     }).join(' ');
 }
 
+function stripHtml(str: string) {
+    return str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function extractH4List(html: string) { // farm | region/country | varietal | processing | roast
+    return [...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/gi)].map(match => stripHtml(match[1] ?? ''));
+}
+
+function extractNotes(html: string) {
+    const emText = stripHtml(html.match(/<em[^>]*>([\s\S]*?)<\/em>/i)?.[1] ?? '');
+    const notesOnly = emText.replace(/Tasting\s*Notes\s*:?\s*/i, '').trim();
+     return toTitleCase(notesOnly);
+}
+
+function pickPrice(product: any) { // prefer and scrape the 250g variant, otherwise default to the first variant 
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const variant = variants.find((v: any) => String(v.title ?? '').includes('250')) ?? variants[0];
+    return Number(variant?.price ?? 0) / 100;
+}
+
 export class HomegroundScraper extends Scraper {
     constructor(roaster: Roaster) {
         super(roaster);
@@ -14,9 +34,9 @@ export class HomegroundScraper extends Scraper {
 
     override async scrape(): Promise<Bean[]> {
         const beans: Bean[] = [];
-        const page = await this.openCatalogPage();
-        await page.waitForLoadState('networkidle');
-        const productUrls = await page.$$eval('product-card', cards => cards.map(card => card.getAttribute('handle')).filter(url => url != null));
+        const catalogPage = await this.openCatalogPage();
+        await catalogPage.waitForLoadState('networkidle');
+        const productUrls = await catalogPage.$$eval('product-card', cards => cards.map(card => card.getAttribute('handle')).filter(url => url != null));
         for (let i = 0; i < productUrls.length; i++) {
             productUrls[i] = 'https://homegroundcoffeeroasters.com/products/' + productUrls[i];
         }
@@ -24,26 +44,29 @@ export class HomegroundScraper extends Scraper {
 
         for (const url of productUrls) {
             try {
-                await page.goto(url);
-                const name = await page.$eval('h1', heading => heading.innerText); // name
-                const h4list = await page.$$eval('h4', h4list => h4list.map(trait => trait.innerHTML)); // farm | region/country | varietal | processing | roast
-                const roastedFor = (await page.$$eval('div.prose', list => list.map(elems => elems.textContent)
-                    .filter(text => text.includes('Roasted For'))))[0]
-                    ?.split('Roasted For ')[1]
-                    ?.split(name)[0]; // espresso or filter, used if no roast level provided
-                let notes = '';
-                if (roastedFor == 'Filter') {
-                    notes = (await page.$eval('em', text => (text.innerText.split('\n\n')[1] ?? ''))); // tasting notes — filters
-                } else if (roastedFor == 'Espresso') {
-                    notes = (await page.$eval('div.shogun-root', x => x.querySelectorAll('p.p1')[1]?.textContent.split(' - ')[1])) ?? '';
-                } else {
-                    continue;
+                const response = await fetch(`${url}.js`);
+                if (!response.ok) {
+                    throw new Error(`Product JSON returned ${response.status}`);
                 }
-                notes = toTitleCase(notes);
+
+                const product = await response.json();
+                const name = product.title ?? '';
+                const price = pickPrice(product);
+                const description = product.description ?? '';
+                const pageHtml = await (await fetch(url)).text();
+                const pageText = stripHtml(pageHtml);
+
+                const h4list = extractH4List(pageHtml); // farm | region/country | varietal | processing | roast
+                const roastedFor = /Roasted\s*For\s*Filter/i.test(pageText) // scrape from the :roasted for: field in the description, otherwise try to infer from the page text
+                    ? 'Filter'
+                    : /Roasted\s*For\s*Espresso/i.test(pageText)
+                        ? 'Espresso'
+                        : '';
+                const notes = extractNotes(description);
                 const b = new Bean(name ?? '',
-                    0, // price defaults to 0 for now until we settle how to implement
+                    price,
                     url,
-                    h4list[4] ?? roastedFor ?? '',
+                    h4list[4] || roastedFor || '', // roast level is either explicitly stated in the description or can be inferred from the roasted for field
                     h4list[2] ?? '',
                     notes,
                     h4list[3] ?? '',

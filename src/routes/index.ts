@@ -4,6 +4,7 @@ import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
 import { Roaster } from "../scraper/types/index.js";
 import { upsertScrapedBeans } from "../db/upsert.js";
 import { TiongHoeScraper } from "../scraper/scrapers/tionghoeScraper.js";
+import { NylonScraper } from "../scraper/scrapers/NylonScraper.js";
 
 export const routes = Router();
 
@@ -93,6 +94,30 @@ routes.post("/scrape/tionghoe", async (_req, res) => {
         });
     } catch (error) {
         console.error("Error running TiongHoeScraper:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+routes.post("/scrape/nylon", async (_req, res) => {
+    try {
+        const roaster = new Roaster(
+            "nyl",
+            "Nylon",
+            "https://nylon.coffee/collections/coffee"
+        );
+
+        const scraper = new NylonScraper(roaster);
+        const result = await scraper.run();
+        const savedBeans = await upsertScrapedBeans(result.beans);
+
+        res.json({
+            message: "Nylon scraping completed successfully",
+            scrapedCount: result.beans.length,
+            savedCount: savedBeans.length,
+            errors: result.errors,
+        });
+    } catch (error) {
+        console.error("Error running NylonScraper:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
