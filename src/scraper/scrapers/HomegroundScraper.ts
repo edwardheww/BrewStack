@@ -17,8 +17,9 @@ function extractH4List(html: string) { // farm | region/country | varietal | pro
 
 function extractNotes(html: string) {
     const emText = stripHtml(html.match(/<em[^>]*>([\s\S]*?)<\/em>/i)?.[1] ?? '');
-    const notesOnly = emText.replace(/Tasting\s*Notes\s*:?\s*/i, '').trim();
-     return toTitleCase(notesOnly);
+    let notesOnly = emText.replace(/Tasting\s*Notes\s*:?\s*/i, '').trim();
+
+    return toTitleCase(notesOnly);
 }
 
 function pickPrice(product: any) { // prefer and scrape the 250g variant, otherwise default to the first variant 

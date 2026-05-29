@@ -5,8 +5,9 @@ export default function Catalog() {
     const [beans, setBeans] = useState<Bean[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/beans').then(res => res.json())
-            .then(data => setBeans(data));
+        fetch("http://localhost:3000/beans")
+            .then(res => res.json())
+            .then(data => setBeans(data.filter((bean: Bean) => bean.flavourNotes)));
     }, []);
 
     return (

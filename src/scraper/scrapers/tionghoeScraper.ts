@@ -25,20 +25,18 @@ export class TiongHoeScraper extends Scraper {
       `https://tionghoe.com/products/${handle}`
     );
 
-    console.log('Product URLs:', productUrls);
-
     for (const url of productUrls) {
       try {
-        console.log('Opening product:', url);
+        //console.log('Opening product:', url);
 
         const response = await page.goto(url, {
           waitUntil: 'domcontentloaded',
           timeout: 60000,
         });
 
-        console.log('Status:', response?.status());
-        console.log('Final URL:', page.url());
-        console.log('Title:', await page.title());
+        //console.log('Status:', response?.status());
+        //console.log('Final URL:', page.url());
+        //console.log('Title:', await page.title());
 
         await page.waitForSelector('h1', {
           timeout: 15000,
@@ -56,9 +54,9 @@ export class TiongHoeScraper extends Scraper {
 
         const price = Number(priceText.replace(/[^0-9.]/g, '')) || 0;
 
-        const flavourNotes = await page
-          .$eval('.feature-chart__value', el => el.textContent?.trim() ?? '')
-          .catch(() => '');
+        const flavourNotes = (await page
+          .$$eval('.feature-chart__value', ls => ls.map(el => el.textContent?.trim()))
+          .catch(() => ''))[1] ?? '';
 
         const descriptionLines = await page
           .$eval('.shopify-section--specification-table .prose p', el =>
