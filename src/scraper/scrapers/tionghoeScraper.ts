@@ -54,6 +54,13 @@ export class TiongHoeScraper extends Scraper {
 
         const price = Number(priceText.replace(/[^0-9.]/g, '')) || 0;
 
+        const imageUrl = await page
+          .$eval('product-gallery img', img => {
+            const src = img.getAttribute('src');
+            return src?.startsWith('//') ? `https:${src}` : src ?? '';
+          })
+          .catch(() => '');
+
         const flavourNotes = (await page
           .$$eval('.feature-chart__value', ls => ls.map(el => el.textContent?.trim()))
           .catch(() => ''))[1] ?? '';
@@ -88,6 +95,7 @@ export class TiongHoeScraper extends Scraper {
           name,
           price,
           url,
+          imageUrl,
           roastLevel,
           varietal,
           flavourNotes,

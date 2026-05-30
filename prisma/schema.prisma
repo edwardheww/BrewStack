@@ -22,6 +22,7 @@ model Bean {
   name String
   price Float?
   url String? @unique
+  imageUrl String?
   roastLevel String?
   varietal String?
   flavourNotes String?

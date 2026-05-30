@@ -27,6 +27,7 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
             update: {
                 name: beanData.beanName,
                 price: beanData.price,
+                imageUrl: beanData.imageUrl,
                 roastLevel: beanData.roastLevel,
                 varietal: beanData.varietal,
                 flavourNotes: beanData.flavourNotes,
@@ -37,6 +38,7 @@ export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
                 name: beanData.beanName,
                 price: beanData.price,
                 url: beanData.url,
+                imageUrl: beanData.imageUrl,
                 roastLevel: beanData.roastLevel,
                 varietal: beanData.varietal,
                 flavourNotes: beanData.flavourNotes,

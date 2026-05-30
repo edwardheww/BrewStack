@@ -52,6 +52,8 @@ export class HomegroundScraper extends Scraper {
                 const product = await response.json();
                 const name = product.title ?? '';
                 const price = pickPrice(product);
+                const rawImageUrl = product.featured_image || product.images?.[0] || '';
+                const imageUrl = rawImageUrl.startsWith('//') ? `https:${rawImageUrl}` : rawImageUrl;
                 const description = product.description ?? '';
                 const pageHtml = await (await fetch(url)).text();
                 const pageText = stripHtml(pageHtml);
@@ -66,6 +68,7 @@ export class HomegroundScraper extends Scraper {
                 const b = new Bean(name ?? '',
                     price,
                     url,
+                    imageUrl,
                     h4list[4] || roastedFor || '', // roast level is either explicitly stated in the description or can be inferred from the roasted for field
                     h4list[2] ?? '',
                     notes,

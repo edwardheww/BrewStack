@@ -29,10 +29,18 @@ export class NylonScraper extends Scraper {
 
             const others = await page.$$eval('div.feature-chart__value.prose', ls => ls.map(info => info.textContent));
 
+            const imageUrl = await page
+                .$eval('product-gallery img', img => {
+                    const src = img.getAttribute('src') || '';
+                    return src.startsWith('//') ? `https:${src}` : src;
+                })
+                .catch(() => '');
+
             const b = new Bean(
                 name,
                 price,
                 url,
+                imageUrl,
                 others[7] ?? '',
                 others[2] ?? '',
                 notes ?? '',
