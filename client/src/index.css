@@ -139,12 +139,22 @@ body {
 }
 
 .bean-image {
-  height: 200px;
+  height: 380px;
   background: #e9e5df;
   color: #76916d;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 13px;
+  overflow: hidden;
+}
+
+.bean-image img {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .bean-body {
@@ -349,8 +359,10 @@ body {
   }
 
   .bean-grid {
-    grid-template-columns: 1fr;
-  }
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 360px));
+  gap: 16px;
+}
 
   .bean-image {
     height: 170px;

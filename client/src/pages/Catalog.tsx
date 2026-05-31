@@ -56,7 +56,13 @@ function BeanCard({ bean, index }: { bean: Bean; index: number }) {
 
     return (
         <article className="bean-card">
-            <div className="bean-image"> Coffee Image </div>
+            <div className="bean-image"> 
+                {bean.imageUrl ? (
+                    <img src={bean.imageUrl} alt={bean.name} /> 
+                ) : (
+                    <span>Coffee Image</span>
+                )}
+            </div>
 
             <div className="bean-body">
                 <div className="bean-title-row">
