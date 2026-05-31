@@ -50,9 +50,9 @@ function FilterBar() {
     );
 }
 
-function BeanCard({ bean, index }: { bean: Bean; index: number }) {
+function BeanCard({ bean }: { bean: Bean; }) {
     const notes = splitNotes(bean.flavourNotes);
-    const origin = sampleOrigins[index % sampleOrigins.length]; // Assign a random sample origin based on index for POC purposes
+    const origin = bean.region?.trim() || 'N/A';
 
     return (
         <article className="bean-card">

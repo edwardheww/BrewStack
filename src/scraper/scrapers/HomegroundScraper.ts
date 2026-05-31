@@ -59,6 +59,7 @@ export class HomegroundScraper extends Scraper {
                 const pageText = stripHtml(pageHtml);
 
                 const h4list = extractH4List(pageHtml); // farm | region/country | varietal | processing | roast
+                const region = h4list[1] ?? ''; // region
                 const roastedFor = /Roasted\s*For\s*Filter/i.test(pageText) // scrape from the :roasted for: field in the description, otherwise try to infer from the page text
                     ? 'Filter'
                     : /Roasted\s*For\s*Espresso/i.test(pageText)
@@ -69,6 +70,7 @@ export class HomegroundScraper extends Scraper {
                     price,
                     url,
                     imageUrl,
+                    region,
                     h4list[4] || roastedFor || '', // roast level is either explicitly stated in the description or can be inferred from the roasted for field
                     h4list[2] ?? '',
                     notes,

@@ -15,6 +15,7 @@ export class Bean {
     price?: number;
     url?: string;
     imageUrl?: string
+    region?: string;
     roastLevel?: string;
     varietal?: string;
     flavourNotes?: string;
@@ -23,12 +24,13 @@ export class Bean {
     roasterId: string;
     roaster: Roaster;
 
-    public constructor(name: string, price: number, url: string, imageUrl: string, roastLevel: string, varietal: string,
+    public constructor(name: string, price: number, url: string, imageUrl: string, region: string, roastLevel: string, varietal: string,
         flavourNotes: string, processingMethod: string, roasterId: string, roaster: Roaster) {
         this.name = name; //d
         this.price = price;
         this.url = url; //d 
         this.imageUrl = imageUrl; //d
+        this.region = region; //d
         this.roastLevel = roastLevel; //d
         this.varietal = varietal; //d
         this.flavourNotes = flavourNotes; //d
@@ -62,6 +64,7 @@ export type ScrapedBean = {
     price?: number;
     url?: string;
     imageUrl?: string
+    region?: string;
     roastLevel?: string;
     varietal?: string;
     flavourNotes?: string;

@@ -12,6 +12,7 @@ export interface Bean {
     price: number | undefined,
     url: string,
     imageUrl: string | undefined,
+    region: string | undefined,
     roastLevel: string | undefined,
     varietal: string | undefined,
     flavourNotes: string | undefined,

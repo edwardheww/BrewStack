@@ -29,6 +29,14 @@ export class NylonScraper extends Scraper {
 
             const others = await page.$$eval('div.feature-chart__value.prose', ls => ls.map(info => info.textContent));
 
+            const region = await page.$$eval('.feature-chart__table-row', rows => {
+                const row = rows.find(row => {
+                    const heading = row.querySelector('.feature-chart__heading')?.textContent?.trim().toLowerCase();
+                    return heading === 'region';
+                });
+                return row?.querySelector('.feature-chart__value')?.textContent?.trim() ?? '';
+            });
+
             const imageUrl = await page
                 .$eval('product-gallery img', img => {
                     const src = img.getAttribute('src') || '';
@@ -41,6 +49,7 @@ export class NylonScraper extends Scraper {
                 price,
                 url,
                 imageUrl,
+                region,
                 others[7] ?? '',
                 others[2] ?? '',
                 notes ?? '',

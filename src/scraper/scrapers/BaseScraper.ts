@@ -15,6 +15,7 @@ export abstract class Scraper {
             price: b.price,
             url: b.url,
             imageUrl: b.imageUrl,  
+            region: b.region,
             roastLevel: b.roastLevel,
             varietal: b.varietal,
             flavourNotes: b.flavourNotes,

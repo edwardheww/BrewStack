@@ -1,6 +1,13 @@
 import { Scraper } from './BaseScraper.js';
 import { Roaster, Bean } from '../types/index.js';
 
+function extractDescriptionField(lines: string[], label: string) {
+  return lines
+    .find(line => line.toLowerCase().startsWith(`${label.toLowerCase()}:`))
+    ?.replace(new RegExp(`${label}:\\s*`, 'i'), '')
+    .trim() ?? '';
+}
+
 export class TiongHoeScraper extends Scraper {
   constructor(roaster: Roaster) {
     super(roaster);
@@ -73,17 +80,11 @@ export class TiongHoeScraper extends Scraper {
           )
           .catch(() => []);
 
-        const varietal =
-          descriptionLines
-            .find(line => line.toLowerCase().startsWith('varietal:'))
-            ?.replace(/Varietal:\s*/i, '')
-            .trim() ?? '';
+        const region = extractDescriptionField(descriptionLines, 'Region');
 
-        const processingMethod =
-          descriptionLines
-            .find(line => line.toLowerCase().startsWith('process:'))
-            ?.replace(/Process:\s*/i, '')
-            .trim() ?? '';
+        const varietal = extractDescriptionField(descriptionLines, 'Varietal');
+
+        const processingMethod = extractDescriptionField(descriptionLines, 'Process');
 
         const roastLevel =
           url.toLowerCase().includes('espresso-blend') ||
@@ -96,6 +97,7 @@ export class TiongHoeScraper extends Scraper {
           price,
           url,
           imageUrl,
+          region,
           roastLevel,
           varietal,
           flavourNotes,
