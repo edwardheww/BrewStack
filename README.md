@@ -10,7 +10,13 @@ Currently implemented features:
 - Central catalog page
 
 ---
+## Milestone 1 Links
+Project Log: https://docs.google.com/spreadsheets/d/1qJc9qv75R07gXsJ0Ww4iWmQ5QGgNuagz5SHjS-Yqv0I/edit?usp=sharing (Edward)
+             https://docs.google.com/spreadsheets/d/1qHIqNYRqPW31MKFUCNnQBzMJVBWoW9A8Fr6RVuZsFc8/edit?usp=sharing (Jun Hong)
+Project Poster: https://drive.google.com/file/d/1fcZQGsHA5Ov6BekZL9ld7tshumQmtHAE/view?usp=sharing
+Project Video: https://drive.google.com/file/d/1-EOzyGoWDlaDIFwZOm83wMpufqB47dG-/view?usp=sharing
 
+---
 ## Tech Stack
 
 | Layer | Technology |
@@ -21,7 +27,7 @@ Currently implemented features:
 | ORM | Prisma |
 | Scraping | Playwright |
 | Scheduling | node-cron |
-| Styling | Tailwind CSS v4 |
+| Styling | CSS |
 
 ---
 
