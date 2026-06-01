@@ -13,8 +13,7 @@ Currently implemented features:
 ## Milestone 1 Links
 Project Log: 
 
-https://docs.google.com/spreadsheets/d/1qJc9qv75R07gXsJ0Ww4iWmQ5QGgNuagz5SHjS-Yqv0I/edit?usp=sharing (Edward)
-https://docs.google.com/spreadsheets/d/1qHIqNYRqPW31MKFUCNnQBzMJVBWoW9A8Fr6RVuZsFc8/edit?usp=sharing (Jun Hong)
+https://docs.google.com/spreadsheets/d/1qJc9qv75R07gXsJ0Ww4iWmQ5QGgNuagz5SHjS-Yqv0I/edit?usp=sharing 
 
 Project Poster:
 
