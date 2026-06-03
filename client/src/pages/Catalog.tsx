@@ -1,14 +1,6 @@
 import { useState, useEffect, useMemo} from 'react';
 import { type Bean } from '../types/index.js';
 
-const sampleOrigins = [ // hardcoded sample origins for testing purposes
-  'Colombia, Cauca',
-  'Ethiopia, Yirgacheffe',
-  'Guatemala, Huehuetenango',
-  'Costa Rica, Tarrazu',
-  'Rwanda, Nyamasheke',
-  'Tanzania, Arusha',
-];
 
 function splitNotes( notes?: string) {
     if (!notes) return [];
@@ -35,18 +27,51 @@ function NavBar() {
     );
 }
 
-function FilterBar() {
-    const filters = ['Roaster', 'Origin', 'Roast Level', 'Process', 'Tasting Notes', 'Price'];
+type Filters = {
+    roaster: string;
+    origin: string;
+    roastLevel: string;
+    process: string;
+};
+
+function FilterBar({filters, setFilters,
+}: {
+    filters: Filters;
+    setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+}) {
 
     return (
         <div className="filter-bar">
-            {filters.map(filter => (
-                <button key={filter} className="filter-button">
-                    <span>{filter}</span>
-                    <span className="filter-arrow">▾</span>
-                </button>
-            ))}
+            <select className="filter-button" value={filters.roaster} onChange={e => setFilters({...filters, roaster: e.target.value})}>
+                <option value="">Roaster</option>
+                <option value="Tiong Hoe">Tiong Hoe</option>
+                <option value="HomeGround">HomeGround</option>
+                <option value="Nylon">Nylon</option>
+            </select>
+            <select className="filter-button" value={filters.origin} onChange={e => setFilters({...filters, origin: e.target.value})}>
+                <option value="">Origin</option>
+                <option value="Colombia">Colombia</option>
+                <option value="Ethiopia">Ethiopia</option>
+                <option value="Peru">Peru</option>
+                <option value="Brazil">Brazil</option>
+            </select>
+            <select className="filter-button" value={filters.roastLevel} onChange={e => setFilters({...filters, roastLevel: e.target.value})}>
+                <option value="">Roast Level</option>
+                <option value="Filter">Filter</option>
+                <option value="Espresso">Espresso</option>
+                <option value="Light">Light</option>
+                <option value="Medium">Medium</option>
+                <option value="Dark">Dark</option>
+            </select>
+            <select className="filter-button" value={filters.process} onChange={e => setFilters({...filters, process: e.target.value})}>
+                <option value="">Process</option>
+                <option value="Washed">Washed</option>
+                <option value="Natural">Natural</option>
+                <option value="Honey">Honey</option>
+            </select>
         </div>
+
+        
     );
 }
 
@@ -155,12 +180,27 @@ function Sidebar({ beans }: { beans: Bean[] }) {
 export default function Catalog() {
     const [beans, setBeans] = useState<Bean[]>([]);
 
+     const [filters, setFilters] = useState<Filters>({
+        roaster: '',
+        origin: '',
+        roastLevel: '',
+        process: '',
+    });
+
     useEffect(() => {
         fetch('http://localhost:3000/beans')
             .then(response => response.json())
             .then(data => setBeans(data.filter((bean: Bean) => bean.flavourNotes)))
             .catch(error => console.error('Error fetching beans:', error));
     }, []);
+
+    const filteredBeans = beans.filter(bean => {
+        return (
+             (!filters.roaster || bean.roaster?.name === filters.roaster) &&  (!filters.origin || bean.region?.toLowerCase().includes(filters.origin.toLowerCase())) &&
+             (!filters.roastLevel || bean.roastLevel?.toLowerCase() === filters.roastLevel.toLowerCase()) 
+             && (!filters.process || bean.processingMethod?.toLowerCase().includes(filters.process.toLowerCase()))
+        );
+    });
 
     return (
         <div className="catalog_page">
@@ -173,11 +213,11 @@ export default function Catalog() {
                         <p>Track fresh drops, tasting notes, origins, and roasters in one place.</p>
                     </div>
 
-                    <FilterBar/>
+                    <FilterBar filters={filters} setFilters={setFilters} />
 
                     <div className="bean-grid">
-                        {beans.map((bean, index) => (
-                            <BeanCard key={bean.id} bean={bean} index={index} />
+                        {filteredBeans.map(bean => (
+                            <BeanCard key={bean.id} bean={bean} />
                         ))}
                     </div>
                 </section>
