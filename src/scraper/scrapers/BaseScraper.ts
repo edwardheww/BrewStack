@@ -14,7 +14,7 @@ export abstract class Scraper {
             beanName: b.name,
             price: b.price,
             url: b.url,
-            imageUrl: b.imageUrl,  
+            imageUrl: b.imageUrl,
             region: b.region,
             roastLevel: b.roastLevel,
             varietal: b.varietal,
@@ -40,6 +40,9 @@ export abstract class Scraper {
     async openCatalogPage(): Promise<Page> {
         const browser = await chromium.launch({ headless: true, slowMo: 800 });
         const page = await browser.newPage();
+        await page.setExtraHTTPHeaders({
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+        });
         await page.goto(this.roaster.website);
         return page;
     }
