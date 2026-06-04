@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo} from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { type Bean } from '../types/index.js';
 
 
-function splitNotes( notes?: string) {
+function splitNotes(notes?: string) {
     if (!notes) return [];
     return notes.split(/,|;/).map(note => note.trim()).filter(Boolean).slice(0, 4); // Limit to 4 notes
 }
@@ -34,7 +34,7 @@ type Filters = {
     process: string;
 };
 
-function FilterBar({filters, setFilters,
+function FilterBar({ filters, setFilters,
 }: {
     filters: Filters;
     setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -42,20 +42,20 @@ function FilterBar({filters, setFilters,
 
     return (
         <div className="filter-bar">
-            <select className="filter-button" value={filters.roaster} onChange={e => setFilters({...filters, roaster: e.target.value})}>
+            <select className="filter-button" value={filters.roaster} onChange={e => setFilters({ ...filters, roaster: e.target.value })}>
                 <option value="">Roaster</option>
                 <option value="Tiong Hoe">Tiong Hoe</option>
                 <option value="HomeGround">HomeGround</option>
                 <option value="Nylon">Nylon</option>
             </select>
-            <select className="filter-button" value={filters.origin} onChange={e => setFilters({...filters, origin: e.target.value})}>
+            <select className="filter-button" value={filters.origin} onChange={e => setFilters({ ...filters, origin: e.target.value })}>
                 <option value="">Origin</option>
                 <option value="Colombia">Colombia</option>
                 <option value="Ethiopia">Ethiopia</option>
                 <option value="Peru">Peru</option>
                 <option value="Brazil">Brazil</option>
             </select>
-            <select className="filter-button" value={filters.roastLevel} onChange={e => setFilters({...filters, roastLevel: e.target.value})}>
+            <select className="filter-button" value={filters.roastLevel} onChange={e => setFilters({ ...filters, roastLevel: e.target.value })}>
                 <option value="">Roast Level</option>
                 <option value="Filter">Filter</option>
                 <option value="Espresso">Espresso</option>
@@ -63,7 +63,7 @@ function FilterBar({filters, setFilters,
                 <option value="Medium">Medium</option>
                 <option value="Dark">Dark</option>
             </select>
-            <select className="filter-button" value={filters.process} onChange={e => setFilters({...filters, process: e.target.value})}>
+            <select className="filter-button" value={filters.process} onChange={e => setFilters({ ...filters, process: e.target.value })}>
                 <option value="">Process</option>
                 <option value="Washed">Washed</option>
                 <option value="Natural">Natural</option>
@@ -71,7 +71,7 @@ function FilterBar({filters, setFilters,
             </select>
         </div>
 
-        
+
     );
 }
 
@@ -81,9 +81,9 @@ function BeanCard({ bean }: { bean: Bean; }) {
 
     return (
         <article className="bean-card">
-            <div className="bean-image"> 
+            <div className="bean-image">
                 {bean.imageUrl ? (
-                    <img src={bean.imageUrl} alt={bean.name} /> 
+                    <img src={bean.imageUrl} alt={bean.name} />
                 ) : (
                     <span>Coffee Image</span>
                 )}
@@ -103,25 +103,25 @@ function BeanCard({ bean }: { bean: Bean; }) {
                 <div className="meta-grid">
                     <div>
                         <span className="meta-label">Roast</span>
-                        <span className="soft-badge">{bean.roastLevel ?? 'N/A,POC'}</span> 
-                        </div> 
-                        <div>
-                            <span className="meta-label">Process</span>
-                            <span className="soft-badge">{bean.processingMethod ?? 'N/A,POC'}</span>
-                        </div>
-                        <div>
-                            <span className="meta-label">Varietal</span>
-                            <span className="soft-badge">{bean.varietal ?? 'N/A,POC'}</span>
-                        </div>
+                        <span className="soft-badge">{bean.roastLevel ?? 'N/A,POC'}</span>
+                    </div>
+                    <div>
+                        <span className="meta-label">Process</span>
+                        <span className="soft-badge">{bean.processingMethod ?? 'N/A,POC'}</span>
+                    </div>
+                    <div>
+                        <span className="meta-label">Varietal</span>
+                        <span className="soft-badge">{bean.varietal ?? 'N/A,POC'}</span>
+                    </div>
                 </div>
 
-                <div className="notes-block"> 
+                <div className="notes-block">
                     <span className="meta-label">Tasting Notes</span>
                     <div className="note-list">
                         {notes.length > 0 ? notes.map(note => (
                             <span key={note} className="note-pill">{note}</span>
                         )) : <span className="note-pill">N/A</span>}
-                        
+
                     </div>
                 </div>
 
@@ -154,18 +154,18 @@ function Sidebar({ beans }: { beans: Bean[] }) {
                     <div className="fresh-item" key={bean.id}>
                         <strong>{bean.name}</strong>
                         <span>{bean.roaster?.name || 'N/A'}</span>
-                        </div>
+                    </div>
                 ))}
             </section>
 
             <section className="side-panel">
                 <h3>Popular Notes</h3>
 
-                {(popularNotes.length > 0 ? popularNotes : [['jasmine', 24], ['blueberry', 18], ['chocolate', 31], ['stone fruit', 15], ] as [string, number][] ).map(([note, count]) => ( 
+                {(popularNotes.length > 0 ? popularNotes : [['jasmine', 24], ['blueberry', 18], ['chocolate', 31], ['stone fruit', 15],] as [string, number][]).map(([note, count]) => (
                     <div className="note-count" key={note}>
                         <span>{note}</span>
                         <strong>{count}</strong>
-                        </div>
+                    </div>
                 ))}
             </section>
 
@@ -180,7 +180,7 @@ function Sidebar({ beans }: { beans: Bean[] }) {
 export default function Catalog() {
     const [beans, setBeans] = useState<Bean[]>([]);
 
-     const [filters, setFilters] = useState<Filters>({
+    const [filters, setFilters] = useState<Filters>({
         roaster: '',
         origin: '',
         roastLevel: '',
@@ -196,15 +196,15 @@ export default function Catalog() {
 
     const filteredBeans = beans.filter(bean => {
         return (
-             (!filters.roaster || bean.roaster?.name === filters.roaster) &&  (!filters.origin || bean.region?.toLowerCase().includes(filters.origin.toLowerCase())) &&
-             (!filters.roastLevel || bean.roastLevel?.toLowerCase() === filters.roastLevel.toLowerCase()) 
-             && (!filters.process || bean.processingMethod?.toLowerCase().includes(filters.process.toLowerCase()))
+            (!filters.roaster || bean.roaster?.name === filters.roaster) && (!filters.origin || bean.region?.toLowerCase().includes(filters.origin.toLowerCase())) &&
+            (!filters.roastLevel || bean.roastLevel?.toLowerCase() === filters.roastLevel.toLowerCase())
+            && (!filters.process || bean.processingMethod?.toLowerCase().includes(filters.process.toLowerCase()))
         );
     });
 
     return (
         <div className="catalog_page">
-            <NavBar/>
+            <NavBar />
 
             <main className="catalog-shell">
                 <section className="catalog-main">
@@ -229,4 +229,3 @@ export default function Catalog() {
 }
 
 
-                
