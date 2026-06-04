@@ -1,5 +1,7 @@
 node_modules
+.DS_Store
 # Keep environment variables out of version control
 .env
+client/.env
 
 /src/generated/prisma
