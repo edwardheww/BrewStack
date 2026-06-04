@@ -13,6 +13,11 @@ app.use(express.json());
 // Allow cross-origin requests from the frontend
 app.use(cors());
 
+app.use((req, res, next) => {
+   console.log(req.method, req.path);
+   next();
+});
+
 // Register all API routes from the routes file.
 app.use(routes);
 
