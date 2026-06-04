@@ -23,6 +23,7 @@
   },
   "scripts": {
     "dev": "tsx index.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "start": "node --loader tsx/esm index.ts"
   }
 }

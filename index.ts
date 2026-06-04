@@ -24,6 +24,7 @@ app.use(routes);
 // Start the scheduled scraper job while the backend is running.
 registerScraperCron();
 
+
 // Start listening for incoming requests.
 app.listen(PORT, () => {
    console.log(`Server is running at http://localhost:${PORT}`);
