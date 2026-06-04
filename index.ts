@@ -4,7 +4,7 @@ import { routes } from "./src/routes/index.js";
 import { registerScraperCron } from "./src/scraper/scheduler.js";
 
 // Create the Express app and choose the port it should run on.
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Allow the server to read JSON request
