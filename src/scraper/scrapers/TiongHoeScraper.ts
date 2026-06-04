@@ -1,11 +1,25 @@
 import { Scraper } from './BaseScraper.js';
 import { Roaster, Bean } from '../types/index.js';
 
-function extractDescriptionField(lines: string[], label: string) {
-  return lines
-    .find(line => line.toLowerCase().startsWith(`${label.toLowerCase()}:`))
-    ?.replace(new RegExp(`${label}:\\s*`, 'i'), '')
-    .trim() ?? '';
+function toTitleCase(str: string) {
+  return str.toLowerCase().split(' ').map((word: any) => {
+    return (word.charAt(0).toUpperCase() + word.slice(1));
+  }).join(' ');
+}
+
+function stripHtml(str: string) {
+  return str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function extractFeatureChart(html: string): string[] {
+  return [...html.matchAll(/<div[^>]*class="[^"]*feature-chart__value[^"]*"[^>]*>([\s\S]*?)<\/div>/gi)]
+    .map(m => stripHtml(m[1] ?? ''));
+}
+
+function pickPrice(product: any): number {
+  const variants = Array.isArray(product.variants) ? product.variants : [];
+  const variant = variants.find((v: any) => String(v.title ?? '').includes('250')) ?? variants[0];
+  return Number(variant?.price ?? 0);
 }
 
 export class TiongHoeScraper extends Scraper {
@@ -15,82 +29,33 @@ export class TiongHoeScraper extends Scraper {
 
   override async scrape(): Promise<Bean[]> {
     const beans: Bean[] = [];
-
-    const page = await this.openCatalogPage();
-
-    await page.waitForSelector('product-card', {
-      timeout: 15000,
-    });
-
-    const productHandles = await page.$$eval('product-card', cards =>
-      cards
-        .map(card => card.getAttribute('handle'))
-        .filter((handle): handle is string => handle !== null)
+    const catalogPage = await this.openCatalogPage();
+    await catalogPage.waitForLoadState('networkidle');
+    const handles = await catalogPage.$$eval('product-card', cards =>
+      cards.map(card => card.getAttribute('handle')).filter((h): h is string => h !== null)
     );
-
-    const productUrls = [...new Set(productHandles)].map(handle =>
-      `https://tionghoe.com/products/${handle}`
-    );
+    const productUrls = [...new Set(handles)].map(h => `https://tionghoe.com/products/${h}`);
 
     for (const url of productUrls) {
       try {
-        //console.log('Opening product:', url);
+        const jsRes = await fetch(`${url}.js`);
+        if (!jsRes.ok) throw new Error(`JS endpoint returned ${jsRes.status}`);
+        const product = await jsRes.json();
 
-        const response = await page.goto(url, {
-          waitUntil: 'domcontentloaded',
-          timeout: 60000,
-        });
+        const name = product.title ?? '';
+        const price = pickPrice(product);
+        const rawImageUrl = product.images?.[0]?.src ?? product.featured_image ?? '';
+        const imageUrl = rawImageUrl.startsWith('//') ? `https:${rawImageUrl}` : rawImageUrl;
+        const roastLevel = product.template_suffix === 'roasted-beans-espresso' ? 'Espresso' : 'Filter';
 
-        //console.log('Status:', response?.status());
-        //console.log('Final URL:', page.url());
-        //console.log('Title:', await page.title());
+        const htmlRes = await fetch(url);
+        const pageHtml = await htmlRes.text();
+        const chartValues = extractFeatureChart(pageHtml);
 
-        await page.waitForSelector('h1', {
-          timeout: 15000,
-        });
-
-        const name = await page
-          .$eval('h1', el => el.textContent?.trim() ?? '')
-          .catch(() => '');
-
-        console.log('Scraped name:', name);
-
-        const priceText = await page
-          .$eval('sale-price', el => el.textContent?.trim() ?? '')
-          .catch(() => '');
-
-        const price = Number(priceText.replace(/[^0-9.]/g, '')) || 0;
-
-        const imageUrl = await page
-          .$eval('product-gallery img', img => {
-            const src = img.getAttribute('src');
-            return src?.startsWith('//') ? `https:${src}` : src ?? '';
-          })
-          .catch(() => '');
-
-        const flavourNotes = (await page
-          .$$eval('.feature-chart__value', ls => ls.map(el => el.textContent?.trim()))
-          .catch(() => ''))[1] ?? '';
-
-        const descriptionLines = await page
-          .$eval('.shopify-section--specification-table .prose p', el =>
-            Array.from(el.childNodes)
-              .map(node => node.textContent?.trim() ?? '')
-              .filter(text => text.length > 0)
-          )
-          .catch(() => []);
-
-        const region = extractDescriptionField(descriptionLines, 'Region');
-
-        const varietal = extractDescriptionField(descriptionLines, 'Varietal');
-
-        const processingMethod = extractDescriptionField(descriptionLines, 'Process');
-
-        const roastLevel =
-          url.toLowerCase().includes('espresso-blend') ||
-            name.toLowerCase().includes('espresso blend')
-            ? 'Espresso'
-            : 'Filter';
+        const flavourNotes = toTitleCase(chartValues[1] ?? '');
+        const region = chartValues[2] ?? '';
+        const varietal = chartValues[3] ?? '';
+        const processingMethod = chartValues[4] ?? '';
 
         const b = new Bean(
           name,
@@ -105,15 +70,11 @@ export class TiongHoeScraper extends Scraper {
           this.roaster.id,
           this.roaster
         );
-
         beans.push(b);
-
-        await page.waitForTimeout(8500);
       } catch (error) {
-        console.error('Failed product:', url, error);
+        console.log(`Failed to scrape ${url}:`, error);
       }
     }
-
     return beans;
   }
 }
