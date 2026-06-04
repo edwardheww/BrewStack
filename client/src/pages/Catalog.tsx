@@ -188,7 +188,7 @@ export default function Catalog() {
     });
 
     useEffect(() => {
-        fetch(import.meta.env.VITE_API_URL)
+        fetch(`${import.meta.env.VITE_API_URL}/beans`)
             .then(response => response.json())
             .then(data => setBeans(data.filter((bean: Bean) => bean.flavourNotes)))
             .catch(error => console.error('Error fetching beans:', error));
