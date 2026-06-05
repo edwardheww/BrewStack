@@ -19,7 +19,7 @@ function extractFeatureChart(html: string): string[] {
 function pickPrice(product: any): number {
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const variant = variants.find((v: any) => String(v.title ?? '').includes('250')) ?? variants[0];
-  return Number(variant?.price ?? 0) / 100;
+  return Number(variant?.price ?? 0);
 }
 
 export class TiongHoeScraper extends Scraper {
