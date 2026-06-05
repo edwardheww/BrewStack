@@ -11,7 +11,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Allow cross-origin requests from the frontend
-app.use(cors());
+app.use(cors({
+   origin: 'https://brew-stack.vercel.app'
+}));
 
 app.use((req, res, next) => {
    console.log(req.method, req.path);

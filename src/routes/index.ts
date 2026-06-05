@@ -55,7 +55,12 @@ routes.get('/events', (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     clients.push(res);
-    req.on('close', () => clients.splice(clients.indexOf(res), 1));
+
+    const keepAlive = setInterval(() => res.write(': ping\n\n'), 30000);
+    req.on('close', () => {
+        clearInterval(keepAlive);
+        clients.splice(clients.indexOf(res), 1);
+    });
 })
 
 export function notifyClients() {
