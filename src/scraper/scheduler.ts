@@ -25,12 +25,9 @@ async function runAllScrapers() {
 }
 
 export async function registerScraperCron() {
-    /*cron.schedule('* * * * *', async () => {
+    cron.schedule('*/5 * * * *', async () => {
         console.log('Running daily scraping.');
         await runAllScrapers();
         console.log('Daily scraping complete.');
-    });*/
-    console.log('Running daily scraping.');
-    await runAllScrapers();
-    console.log('Daily scraping complete.');
+    });
 }
