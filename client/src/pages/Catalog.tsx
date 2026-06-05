@@ -47,6 +47,7 @@ function FilterBar({ filters, setFilters,
                 <option value="Tiong Hoe">Tiong Hoe</option>
                 <option value="HomeGround">HomeGround</option>
                 <option value="Nylon">Nylon</option>
+                <option value="Alchemist">Alchemist</option>
             </select>
             <select className="filter-button" value={filters.origin} onChange={e => setFilters({ ...filters, origin: e.target.value })}>
                 <option value="">Origin</option>

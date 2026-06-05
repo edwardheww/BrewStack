@@ -61,15 +61,11 @@ export class AlchemistScraper extends Scraper {
           .join(', ');
 
         const image = card.querySelector('.image-con img.image') as HTMLImageElement | null;
-        const rawImageUrl =
-            image?.src ||
-            image?.getAttribute('data-src') ||
-            image?.getAttribute('srcset')?.split(' ')[0] ||
-            '';
+        const rawImageUrl = image?.getAttribute('data-srcset')?.split(',').pop()?.trim().split(/\s+/)[0] ||'';
         const imageUrl = rawImageUrl.startsWith('//')
             ? `https:${rawImageUrl}`
             : rawImageUrl;
-
+        
         return {
           name: link?.textContent?.trim() ?? '',
           url: link?.href ?? '',
