@@ -199,6 +199,9 @@ export default function Catalog() {
     // Subsequent fetches should db update mid-browsing.
     useEffect(() => {
         const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`);
+        eventSource.onopen = () => console.log('SSE connected');
+        eventSource.onmessage = (e) => console.log('SSE message:', e.data);
+        eventSource.onerror = (e) => console.log('SSE error:', e);
         eventSource.onmessage = () => {
             fetch(`${import.meta.env.VITE_API_URL}/beans`)
                 .then(res => res.json())
