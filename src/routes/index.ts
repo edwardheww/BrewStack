@@ -5,6 +5,7 @@ import { Roaster } from "../scraper/types/index.js";
 import { upsertScrapedBeans } from "../db/upsert.js";
 import { NylonScraper } from "../scraper/scrapers/NylonScraper.js";
 import { TiongHoeScraper } from "../scraper/scrapers/TiongHoeScraper.js";
+import { AlchemistScraper } from "../scraper/scrapers/AlchemistScraper.js";
 
 export const routes = Router();
 
