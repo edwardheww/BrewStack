@@ -64,6 +64,7 @@ routes.get('/events', (req, res) => {
 })
 
 export function notifyClients() {
+    console.log(`Notifying ${clients.length} clients`);
     clients.forEach(res => res.write('data: update\n\n'));
 }
 
