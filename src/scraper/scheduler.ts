@@ -5,6 +5,7 @@ import { TiongHoeScraper } from './scrapers/TiongHoeScraper.js';
 import { AlchemistScraper } from './scrapers/AlchemistScraper.js';
 import { Roaster } from './types/index.js';
 import { clearDb, upsertScrapedBeans } from '../db/upsert.js';
+import { notifyClients } from '../routes/index.js';
 
 const scrapers = [
     new HomegroundScraper(new Roaster('hg', 'HomeGround', 'https://homegroundcoffeeroasters.com/collections/coffees-specialty')),
@@ -22,6 +23,8 @@ async function runAllScrapers() {
         }
         catch (error: unknown) { console.log(error); }
     }
+
+    notifyClients()
 }
 
 export async function registerScraperCron() {
