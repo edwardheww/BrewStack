@@ -56,7 +56,7 @@ routes.get('/events', (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     clients.push(res);
 
-    const keepAlive = setInterval(() => res.write(': ping\n\n'), 30000);
+    const keepAlive = setInterval(() => res.write(': ping\n\n'), 15000);
     req.on('close', () => {
         clearInterval(keepAlive);
         clients.splice(clients.indexOf(res), 1);
