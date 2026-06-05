@@ -19,7 +19,9 @@ async function runAllScrapers() {
 
     for (const scraper of scrapers) {
         try {
-            await upsertScrapedBeans((await scraper.run()).beans);
+            const result = await scraper.run();
+            console.log(`${scraper.roaster.name}: ${result.beans.length} beans`);
+            await upsertScrapedBeans(result.beans);
         }
         catch (error: unknown) { console.log(error); }
     }
