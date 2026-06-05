@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "tsx index.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && playwright install chromium",
     "start": "node --import tsx/esm index.ts"
   }
 }
