@@ -280,6 +280,9 @@ Integration with roasters' existing checkout flows, allowing users to add beans 
 
 ---
 
+## Deployment Links
+Frontend: https://brew-stack.vercel.app/catalog
+
 ## Made By
 
 - Edward Hew
