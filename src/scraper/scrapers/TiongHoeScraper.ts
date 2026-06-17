@@ -55,7 +55,7 @@ export class TiongHoeScraper extends Scraper {
         const flavourNotes = toTitleCase(chartValues[1] ?? '');
         const region = chartValues[2] ?? '';
         const varietal = chartValues[3] ?? '';
-        const processingMethod = chartValues[4] ?? '';
+        const processingMethod = stripHtml(pageHtml.match(/Process:\s*([^<]+)/i)?.[1] ?? ''); //strip the procesing method from the page based on TH's actual HTML
 
         const b = new Bean(
           name,
