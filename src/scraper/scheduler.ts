@@ -5,6 +5,7 @@ import { TiongHoeScraper } from './scrapers/TiongHoeScraper.js';
 import { AlchemistScraper } from './scrapers/AlchemistScraper.js';
 import { Roaster } from './types/index.js';
 import { clearDb, upsertScrapedBeans } from '../db/upsert.js';
+import { notifyClients } from '../routes/index.js';
 
 const scrapers = [
     new HomegroundScraper(new Roaster('hg', 'HomeGround', 'https://homegroundcoffeeroasters.com/collections/coffees-specialty')),
@@ -18,19 +19,20 @@ async function runAllScrapers() {
 
     for (const scraper of scrapers) {
         try {
-            await upsertScrapedBeans((await scraper.run()).beans);
+            const result = await scraper.run();
+            console.log(`${scraper.roaster.name}: ${result.beans.length} beans`);
+            await upsertScrapedBeans(result.beans);
         }
         catch (error: unknown) { console.log(error); }
     }
+
+    notifyClients()
 }
 
 export async function registerScraperCron() {
-    /*cron.schedule('* * * * *', async () => {
+    cron.schedule('0 *0 * * *', async () => {
         console.log('Running daily scraping.');
         await runAllScrapers();
         console.log('Daily scraping complete.');
-    });*/
-    console.log('Running daily scraping.');
-    await runAllScrapers();
-    console.log('Daily scraping complete.');
+    });
 }

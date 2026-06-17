@@ -38,9 +38,16 @@ export abstract class Scraper {
     }
 
     async openCatalogPage(): Promise<Page> {
-        const browser = await chromium.launch({ headless: true, slowMo: 800 });
-        const page = await browser.newPage();
-        await page.goto(this.roaster.website);
-        return page;
+        try {
+            console.log('Launching browser...');
+            const browser = await chromium.launch({ headless: true, slowMo: 800 });
+            const page = await browser.newPage();
+            console.log('Navigating to:', this.roaster.website);
+            await page.goto(this.roaster.website);
+            return page;
+        } catch (error) {
+            console.error('openCatalogPage failed:', error);
+            throw error;
+        }
     }
 }

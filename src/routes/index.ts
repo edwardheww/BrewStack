@@ -2,6 +2,7 @@ import { Router } from "express";
 import { prisma } from "../db/client.js";
 import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
 import { Roaster } from "../scraper/types/index.js";
+import { type Response } from "express";
 import { upsertScrapedBeans } from "../db/upsert.js";
 import { NylonScraper } from "../scraper/scrapers/NylonScraper.js";
 import { TiongHoeScraper } from "../scraper/scrapers/TiongHoeScraper.js";
@@ -45,6 +46,27 @@ routes.get("/roasters", async (_req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+// SSE Endpoint that notifies frontend to re-fetch should backend be updated.
+const clients: Response[] = [];
+
+routes.get('/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    clients.push(res);
+
+    const keepAlive = setInterval(() => res.write(': ping\n\n'), 15000);
+    req.on('close', () => {
+        clearInterval(keepAlive);
+        clients.splice(clients.indexOf(res), 1);
+    });
+})
+
+export function notifyClients() {
+    console.log(`Notifying ${clients.length} clients`);
+    clients.forEach(res => res.write('data: update\n\n'));
+}
 
 // Temporary testing route: manually runs the scraper until the automatic scraper is finalized.
 routes.post("/scrape/homeground", async (_req, res) => {
@@ -122,3 +144,5 @@ routes.post("/scrape/nylon", async (_req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
