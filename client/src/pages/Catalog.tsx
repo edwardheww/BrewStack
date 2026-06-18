@@ -48,6 +48,7 @@ function FilterBar({ filters, setFilters,
                 <option value="HomeGround">HomeGround</option>
                 <option value="Nylon">Nylon</option>
                 <option value="Alchemist">Alchemist</option>
+                <option value="Community Coffee">Community Coffee</option>
             </select>
             <select className="filter-button" value={filters.origin} onChange={e => setFilters({ ...filters, origin: e.target.value })}>
                 <option value="">Origin</option>
@@ -192,7 +193,7 @@ export default function Catalog() {
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/beans`)
             .then(response => response.json())
-            .then(data => setBeans(data.filter((bean: Bean) => bean.flavourNotes)))
+            .then(data => setBeans(data))
             .catch(error => console.error('Error fetching beans:', error));
     }, []);
 
@@ -205,7 +206,7 @@ export default function Catalog() {
         eventSource.onmessage = () => {
             fetch(`${import.meta.env.VITE_API_URL}/beans`)
                 .then(res => res.json())
-                .then(data => setBeans(data.filter((bean: Bean) => bean.flavourNotes)));
+                .then(data => setBeans(data))
         };
         return () => eventSource.close();
     }, []);
