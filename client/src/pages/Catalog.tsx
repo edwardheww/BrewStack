@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { type Bean } from '../types/index.js';
+import { Link } from 'react-router-dom';
 
 
 function splitNotes(notes?: string) {
@@ -17,9 +18,9 @@ function NavBar() {
         <header className="site-nav">
             <div className="brand">BrewStack</div>
             <nav>
-                <a>Catalog</a>
+                <Link to="/catalog">Catalog</Link>
                 <a>Roasters</a>
-                <a>Tasting Notes</a>
+                <Link to="/find-my-coffee">Find My Coffee</Link>
                 <a> Saved Beans</a>
             </nav>
             <button className="search-button" aria-label="Search">⌕</button>
