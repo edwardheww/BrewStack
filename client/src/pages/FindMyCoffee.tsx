@@ -44,7 +44,7 @@ const questions: Question[] = [ // questions for the quiz to figure out what kin
 function NavBar() { // nav buttons on the top of pages to navigate between pages
     return (
         <header className="site-nav">
-            <div className="brand">BrewStack</div>
+            <Link className="brand home-brand" to="/">BrewStack</Link>
             <nav>
                 <Link to="/catalog">Catalog</Link>
                 <a>Roasters</a>

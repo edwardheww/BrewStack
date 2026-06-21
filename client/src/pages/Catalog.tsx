@@ -16,7 +16,7 @@ function money(price?: number) {
 function NavBar() {
     return (
         <header className="site-nav">
-            <div className="brand">BrewStack</div>
+            <Link className="brand home-brand" to="/">BrewStack</Link>
             <nav>
                 <Link to="/catalog">Catalog</Link>
                 <a>Roasters</a>

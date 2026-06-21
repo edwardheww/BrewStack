@@ -107,6 +107,68 @@ export default function Home() {
                         ))}
                     </div>
                 </section>
+
+
+                <section className="home-how">
+                    <p className="home-eyebrow">How BrewStack Works</p>
+
+                    <div className="how-grid">
+                        <article>
+                            <span>1</span>
+                            <h2>Take the bean quiz</h2>
+                            <p>New here, or just not sure what you like? Take the quiz or filter the catalog by roast, origin, and process.</p>
+                        </article>
+
+                        <article>
+                            <span>2</span>
+                            <h2>Discover beans and roasters</h2>
+                            <p>See curated picks, browse fresh drops, and find specialty roasters near you.</p>
+                        </article>
+
+                        <article>
+                            <span>3</span>
+                            <h2>Save and shop</h2>
+                            <p>Bookmark beans to your list, then head straight to the roaster to buy.</p>                           
+                        </article>
+                    </div>
+                </section>
+
+
+                <section className="home-cta">
+                    <h2>Stop guessing. Start discovering.</h2>
+                     <p>One place for Singapore's specialty coffee — beans, roasters, and everything in between.</p>
+                     <Link className="home-primary" to="/find-my-coffee">Find my coffee</Link>
+                </section>
+
+
+                <section className="why-section">
+                    <p className="home-eyebrow">Why We Built This</p>
+                    <h2>A coffee scene this good shouldn't be this hard to follow</h2>
+
+                    <div className="why-grid">
+                        <article>
+                            <div className="why-icon red">⌕</div>
+                            <h3>Scattered, not searchable</h3>
+                            <p>Roaster info, bean offerings, and café details live across separate Instagram pages and websites.</p>
+                        </article>
+
+                        <article>
+                            <div className="why-icon brown">↻</div>
+                            <h3>Outdated the moment it's posted</h3>
+                            <p>Specialty beans rotate constantly with seasonal sourcing and limited drops.</p>
+                        </article>
+
+                        <article>
+                            <div className="why-icon green">♙</div>
+                             <h3>Same names, every time</h3>
+                             <p>Smaller and newer roasters get buried even when the coffee itself is just as good, or better.</p>
+                        </article>
+
+                        <p className="why-close">
+                            We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene.                          
+                        </p>
+                    </div>
+                </section>
             </main>
         </div>
      

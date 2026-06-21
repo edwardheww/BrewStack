@@ -900,5 +900,146 @@ body {
   font-size: 16px;
 }
 
+.home-how {
+  padding: 68px 80px;
+  border-bottom: 1px solid #ded8cf;
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 80px;
+}
+
+.how-grid span {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d8582a;
+  border-radius: 999px;
+  color: #d8582a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.how-grid h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #120804;
+}
+
+.how-grid p {
+  margin: 0;
+  color: #4f5961;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.home-cta {
+  text-align: center;
+  padding: 80px 24px;
+  border-bottom: 1px solid #ded8cf;
+}
+
+.home-cta h2 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 40px;
+  font-weight: 520;
+  color: #120804;
+}
+
+.home-cta p {
+  margin: 18px 0 34px;
+  color: #4f5961;
+  font-size: 18px;
+}
+
+.why-section {
+  padding: 80px 14vw 92px;
+  text-align: center;
+}
+
+.why-section h2 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 40px;
+  font-weight: 520;
+  color: #120804;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 72px;
+  margin-top: 48px;
+  text-align: left;
+}
+
+.why-icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 28px;
+}
+
+.why-grid h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #120804;
+}
+
+.why-grid p {
+  margin: 0;
+  color: #4f5961;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.why-close {
+  border-top: 1px solid #ded8cf;
+  margin: 54px 0 0;
+  padding-top: 34px;
+  color: #4f5961;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+@media (max-width: 900px) {
+  .home-hero h1 {
+    font-size: 46px;
+  }
+
+  .home-stats,
+  .home-actions {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .home-features,
+  .home-drop-grid,
+  .how-grid,
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-features article {
+    border-right: 0;
+    border-bottom: 1px solid #ded8cf;
+  }
+
+  .fresh-drops-section,
+  .home-how,
+  .why-section {
+    padding: 48px 24px;
+  }
+
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
 
 
