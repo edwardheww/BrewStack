@@ -622,14 +622,7 @@ body {
 
 .match-body .note-list {
   margin: 14px 0 18px;
-  gap: 8px;
-}
-
-.match-body .note-pill {
-  padding: 5px 10px;
-  font-size: 12px;
-  line-height: 1.2;
-  border-radius: 999px;
+  gap: 7px;
 }
 
 .match-meta {

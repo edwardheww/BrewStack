@@ -31,7 +31,7 @@ const questions: Question[] = [ // questions for the quiz to figure out what kin
     },
     {
         key: 'cup',
-        question: 'What size of cup do you prefer?',
+        question: 'What kind of cup do you prefer?',
         options: ['Bright and Juicy', 'Smooth and Mellow', 'Rich and Full-bodied', 'Clean and Tea-like', 'No preference'],
     },
     {
