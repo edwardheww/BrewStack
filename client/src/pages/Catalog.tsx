@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { type Bean } from '../types/index.js';
-import { Link } from 'react-router-dom';
-
+import NavBar from '../components/NavBar.js';
 
 function splitNotes(notes?: string) {
     if (!notes) return [];
@@ -11,21 +10,6 @@ function splitNotes(notes?: string) {
 function money(price?: number) {
     if (!price) return 'N/A';
     return `$${price}`;
-}
-
-function NavBar() {
-    return (
-        <header className="site-nav">
-            <Link className="brand home-brand" to="/">BrewStack</Link>
-            <nav>
-                <Link to="/catalog">Catalog</Link>
-                <a>Roasters</a>
-                <Link to="/find-my-coffee">Find My Coffee</Link>
-                <a> Saved Beans</a>
-            </nav>
-            <button className="search-button" aria-label="Search">⌕</button>
-        </header>
-    );
 }
 
 type Filters = {

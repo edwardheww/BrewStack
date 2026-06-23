@@ -359,10 +359,10 @@ body {
   }
 
   .bean-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 360px));
-  gap: 16px;
-}
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 360px));
+    gap: 16px;
+  }
 
   .bean-image {
     height: 170px;
@@ -374,6 +374,15 @@ body {
   border-bottom: 1px solid #160703;
   padding-bottom: 4px;
   font-weight: 600;
+}
+
+.roasters-page {
+  min-height: 100svh;
+  background: #f7f4ef;
+}
+
+.roasters-shell {
+  padding: 32px 28px;
 }
 
 .find-page {
@@ -818,9 +827,17 @@ body {
   margin-bottom: 28px;
 }
 
-.green { color: #3f7b21; }
-.red { color: #b52c2c; }
-.brown { color: #975d08; }
+.green {
+  color: #3f7b21;
+}
+
+.red {
+  color: #b52c2c;
+}
+
+.brown {
+  color: #975d08;
+}
 
 .home-features h2 {
   margin: 0 0 12px;
@@ -1041,6 +1058,3 @@ body {
     gap: 16px;
   }
 }
-
-
-
