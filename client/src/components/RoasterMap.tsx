@@ -19,7 +19,7 @@ const ROASTERS = [
 export default function RoasterMap() {
     return (
         <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: "100%" }}>
-            <TileLayer url="https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
+            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
             {
                 ROASTERS.map(roaster => (
                     <Marker key={roaster.name} position={[roaster.lat, roaster.long]}>
