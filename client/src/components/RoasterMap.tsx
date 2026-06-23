@@ -11,7 +11,7 @@ const ROASTERS = [
 
 const defaultIcon = L.divIcon({
     className: '',
-    html: `div style="width:12px; height:12px; border-radius:50%; background:#2b2926; border:2px solid #fff; box-shadow:0 1px 3px rgba(0, 0, 0, 0.3)"></div>`,
+    html: `<div style="width:12px; height:12px; border-radius:50%; background:#2b2926; border:2px solid #fff; box-shadow:0 1px 3px rgba(0, 0, 0, 0.3)"></div>`,
     iconSize: [12, 12],
     iconAnchor: [6, 6],
     popupAnchor: [0, 10],
