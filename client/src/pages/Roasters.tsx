@@ -8,7 +8,7 @@ export default function Roasters() {
             <div className="roasters-shell">
                 <div className="page-heading">
                     <h1>Roasters</h1>
-                    <p>Find specialty coffee near you</p>
+                    <p>Find specialty coffee near you. Click on a marker to view.</p>
                 </div>
                 <RoasterMap />
             </div>

@@ -3,10 +3,39 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
 const ROASTERS = [
-    { name: 'Homeground Coffee Roasters', lat: 1.3332, long: 103.7890, address: '911 Bukit Timah Rd' },
-    { name: 'Nylon Coffee', lat: 1.2769, long: 103.8400, address: '4 Everton Park #01-40' },
-    { name: 'Tiong Hoe Specialty Coffee', lat: 1.2910, long: 103.8031, address: '170 Stirling Rd #01-1133' },
-    { name: 'Alchemist Coffee', lat: 1.3023, long: 103.8376, address: '260 Orchard Rd' },
+    // HOMEGROUND
+    { name: 'Homeground Coffee Roasters', branch: 'Bukit Timah', lat: 1.3332, long: 103.7890, address: '911 Bukit Timah Rd' },
+
+    // NYLON
+    { name: 'Nylon Coffee', branch: 'Everton Park', lat: 1.2769, long: 103.8400, address: '4 Everton Park #01-40' },
+
+    // TIONG HOE
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Queenstown', lat: 1.2910, long: 103.8031, address: '170 Stirling Rd #01-1133' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Balmoral Plaza', lat: 1.3167, long: 103.8353, address: '271 Bukit Timah Rd #01-08' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Parkway Parade', lat: 1.3011, long: 103.9053, address: '80 Marine Parade Rd #03-28' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'one-north', lat: 1.2999, long: 103.7880, address: '1 Fusionopolis Pl #01-28/29' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'SingPost Centre', lat: 1.3189, long: 103.8940, address: '10 Eunos Rd 8 #01-117' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Raffles Place', lat: 1.2842, long: 103.8511, address: '1 Raffles Pl B1-34' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'SBF Centre', lat: 1.2783, long: 103.8479, address: '160 Robinson Rd #01-03' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Tanjong Pagar', lat: 1.2769, long: 103.8454, address: '7 Wallich St B1-09 Guoco Tower' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'VivoCity', lat: 1.2648, long: 103.8229, address: '1 Harbourfront Walk #B2-23' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'Woodleigh Mall', lat: 1.3390, long: 103.8716, address: '11 Bidadari Park Dr #B1-32/33' },
+
+    // ALCHEMIST
+    { name: 'Alchemist', branch: 'International Plaza', lat: 1.2764, long: 103.8458, address: '10 Anson Rd #01-34' },
+    { name: 'Alchemist', branch: 'The Mill', lat: 1.2853, long: 103.8097, address: '5 Jln Kilang #02-02' },
+    { name: 'Alchemist', branch: 'The Heeren', lat: 1.3023, long: 103.8376, address: '260 Orchard Rd #01-ORA' },
+    { name: 'Alchemist', branch: 'Plaza Singapura', lat: 1.3003, long: 103.8455, address: '68 Orchard Rd #01-50' },
+    { name: 'Alchemist', branch: '71 Robinson', lat: 1.2785, long: 103.8489, address: '71 Robinson Rd #01-01' },
+    { name: 'Alchemist', branch: 'Asia Square', lat: 1.2795, long: 103.8511, address: '8 Marina Vw #01-07' },
+    { name: 'Alchemist', branch: 'Ocean Financial Centre', lat: 1.2834, long: 103.8518, address: '10 Collyer Quay #01-K1' },
+    { name: 'Alchemist', branch: 'Arab Street', lat: 1.3018, long: 103.8586, address: '119 Arab St' },
+    { name: 'Alchemist', branch: 'Funan', lat: 1.2916, long: 103.8506, address: '107 N Bridge Rd #01-01' },
+
+    // COMMUNITY
+    { name: 'The Community Coffee', branch: 'Hamilton', lat: 1.3116, long: 103.8614, address: '38 Hamilton Rd' },
+    { name: 'The Community Coffee', branch: 'Far East Plaza', lat: 1.3073, long: 103.8337, address: '14 Scotts Rd #02-94' },
+    { name: 'The Community Coffee', branch: 'Odeon', lat: 1.2959, long: 103.8535, address: '333 N Bridge Rd #01-12' },
 ]
 
 const defaultIcon = L.divIcon({
@@ -24,7 +53,11 @@ export default function RoasterMap() {
             {
                 ROASTERS.map(roaster => (
                     <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={defaultIcon}>
-                        <Popup>{roaster.name}</Popup>
+                        <Popup>
+                            <strong>{roaster.name}</strong>
+                            <br />
+                            <span style={{ fontSize: '11px', color: '#6F6962' }}>{roaster.branch}</span>
+                        </Popup>
                     </Marker>
                 ))
             }
