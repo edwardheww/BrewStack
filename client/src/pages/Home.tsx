@@ -63,14 +63,14 @@ export default function Home() {
 
                 <section className="home-features">
                     <article>
-                        <div className="feature-icon green">✓</div>
+                        <div className="feature-icon green">🗹</div>
                         <h2>Take the bean quiz</h2>
                         <p>Answer a few quick questions on flavour, brew method, and cup profile, then get matched to your taste.</p>
                         <span>Core Feature</span>
                     </article>
 
                     <article>
-                        <div className="feature-icon red">◇</div>\
+                        <div className="feature-icon red">🗺️</div>
                          <h2>Explore the map</h2>
                           <p>See every specialty roaster near you, including the small, lesser-marketed ones that are easy to miss.</p>
                           <span>Core Feature</span>
@@ -92,18 +92,24 @@ export default function Home() {
                     </div>
 
                     <div className="home-drop-grid">
-                        {freshDrops.map(bean => (
-                            <article className="home-drop-card" key={bean.id}>
-                                <div className="home-drop-image">
-                                    {bean.imageUrl ? (
-                                        <img src={bean.imageUrl} alt={bean.name} />
-                                    ) : (
-                                        <span>Coffee Image</span>
-                                    )}
-                                </div>
-                                <h3>{bean.name}</h3>
-                                <p>{bean.roaster?.name || 'N/A'} — {money(bean.price)}</p>
-                            </article>
+                        {freshDrops.map(bean => (  //clicking on the freshdrops goes to the bean's actual website
+                            <a 
+                                className="home-drop-card"
+                                key={bean.id}
+                                href={bean.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                >
+                                    <div className="home-drop-image">
+                                        {bean.imageUrl ? (
+                                            <img src={bean.imageUrl} alt={bean.name} />
+                                        ) : (
+                                            <span>Coffee Image</span>
+                                        )}
+                                    </div>
+                                    <h3>{bean.name}</h3>
+                                    <p>{bean.roaster?.name || 'N/A'} — {money(bean.price)}</p>
+                                </a>
                         ))}
                     </div>
                 </section>
@@ -149,25 +155,25 @@ export default function Home() {
                         <article>
                             <div className="why-icon red">⌕</div>
                             <h3>Scattered, not searchable</h3>
-                            <p>Roaster info, bean offerings, and café details live across separate Instagram pages and websites.</p>
+                            <p>As baristas and coffee drinkers ourselves, we kept hitting the same wall: roaster info, bean offerings, and café details live across dozens of separate Instagram pages and websites, with no single place to compare them.</p>
                         </article>
 
                         <article>
                             <div className="why-icon brown">↻</div>
                             <h3>Outdated the moment it's posted</h3>
-                            <p>Specialty beans rotate constantly with seasonal sourcing and limited drops.</p>
+                            <p>Specialty beans rotate constantly with seasonal sourcing and limited drops. A list that's accurate today is stale by next week, leaving drinkers unsure what's actually available right now.</p>
                         </article>
 
                         <article>
-                            <div className="why-icon green">♙</div>
+                            <div className="why-icon green">👥</div>
                              <h3>Same names, every time</h3>
-                             <p>Smaller and newer roasters get buried even when the coffee itself is just as good, or better.</p>
+                             <p>Without strong marketing budgets, smaller and newer roasters get buried under well-known brands — even when the coffee itself is just as good, or better.</p>
                         </article>
-
-                        <p className="why-close">
-                            We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene.                          
-                        </p>
                     </div>
+
+                    <p className="why-close">
+                        We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene — helping newcomers learn what they actually like, and giving every local roaster, big or small, an equal shot at being discovered.  
+                    </p>
                 </section>
             </main>
         </div>
