@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { icon } from 'leaflet';
+import L from 'leaflet';
 
 const ROASTERS = [
     { name: 'Homeground Coffee Roasters', lat: 1.3332, long: 103.7890, address: '911 Bukit Timah Rd' },
@@ -9,13 +9,12 @@ const ROASTERS = [
     { name: 'Alchemist Coffee', lat: 1.3023, long: 103.8376, address: '260 Orchard Rd' },
 ]
 
-const defaultIcon = icon({
-    iconUrl: '/marker-icon.png',
-    iconRetinaUrl: '/marker-icon-2x.png',
-    shadowUrl: '/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
+const defaultIcon = L.divIcon({
+    className: '',
+    html: `div style="width:12px; height:12px; border-radius:50%; background:#2b2926; border:2px solid #fff; box-shadow:0 1px 3px rgba(0, 0, 0, 0.3)"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+    popupAnchor: [0, 10],
 })
 
 export default function RoasterMap() {
