@@ -67,54 +67,62 @@ function BeanCard({ bean }: { bean: Bean; }) {
     const origin = bean.region?.trim() || 'N/A';
 
     return (
-        <article className="bean-card">
-            <div className="bean-image">
-                {bean.imageUrl ? (
-                    <img src={bean.imageUrl} alt={bean.name} />
-                ) : (
-                    <span>Coffee Image</span>
-                )}
-            </div>
-
-            <div className="bean-body">
-                <div className="bean-title-row">
-                    <div>
-                        <h2> {bean.name} </h2>
-                        <p className="roaster"> {bean.roaster?.name || 'N/A'} </p>
-                    </div>
-                    <strong className="price"> {money(bean.price)} </strong>
+        <a 
+            className="bean-card-link" // clicking on each product opens the actual roaster's product page in a new tab
+            href={bean.url}
+            target="_blank"
+            rel="noreferrer"
+            >
+        
+            <article className="bean-card">
+                <div className="bean-image">
+                    {bean.imageUrl ? (
+                        <img src={bean.imageUrl} alt={bean.name} />
+                    ) : (
+                        <span>Coffee Image</span>
+                    )}
                 </div>
 
-                <p className="origin"> {origin} </p>
+                <div className="bean-body">
+                    <div className="bean-title-row">
+                        <div>
+                            <h2> {bean.name} </h2>
+                            <p className="roaster"> {bean.roaster?.name || 'N/A'} </p>
+                        </div>
+                        <strong className="price"> {money(bean.price)} </strong>
+                    </div>
 
-                <div className="meta-grid">
-                    <div>
-                        <span className="meta-label">Roast</span>
-                        <span className="soft-badge">{bean.roastLevel ?? 'N/A,POC'}</span>
+                    <p className="origin"> {origin} </p>
+
+                    <div className="meta-grid">
+                        <div>
+                            <span className="meta-label">Roast</span>
+                            <span className="soft-badge">{bean.roastLevel ?? 'N/A,POC'}</span>
+                        </div>
+                        <div>
+                            <span className="meta-label">Process</span>
+                            <span className="soft-badge">{bean.processingMethod ?? 'N/A,POC'}</span>
+                        </div>
+                        <div>
+                            <span className="meta-label">Varietal</span>
+                            <span className="soft-badge">{bean.varietal ?? 'N/A,POC'}</span>
+                        </div>
                     </div>
-                    <div>
-                        <span className="meta-label">Process</span>
-                        <span className="soft-badge">{bean.processingMethod ?? 'N/A,POC'}</span>
+
+                    <div className="notes-block">
+                        <span className="meta-label">Tasting Notes</span>
+                        <div className="note-list">
+                            {notes.length > 0 ? notes.map(note => (
+                                <span key={note} className="note-pill">{note}</span>
+                            )) : <span className="note-pill">N/A</span>}
+
+                        </div>
                     </div>
-                    <div>
-                        <span className="meta-label">Varietal</span>
-                        <span className="soft-badge">{bean.varietal ?? 'N/A,POC'}</span>
-                    </div>
+
+                    <p className="updated">Updated recently</p>
                 </div>
-
-                <div className="notes-block">
-                    <span className="meta-label">Tasting Notes</span>
-                    <div className="note-list">
-                        {notes.length > 0 ? notes.map(note => (
-                            <span key={note} className="note-pill">{note}</span>
-                        )) : <span className="note-pill">N/A</span>}
-
-                    </div>
-                </div>
-
-                <p className="updated">Updated recently</p>
-            </div>
-        </article>
+            </article>
+        </a>
     );
 }
 

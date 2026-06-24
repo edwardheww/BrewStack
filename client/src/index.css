@@ -1058,3 +1058,9 @@ body {
     gap: 16px;
   }
 }
+
+.bean-card-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
