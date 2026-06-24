@@ -1,7 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useState, useEffect } from 'react';
 
+// Roasters & their outlets
 const ROASTERS = [
     // HOMEGROUND
     { name: 'Homeground Coffee Roasters', branch: 'Bukit Timah', lat: 1.3332, long: 103.7890, address: '911 Bukit Timah Rd' },
@@ -38,6 +40,7 @@ const ROASTERS = [
     { name: 'The Community Coffee', branch: 'Odeon', lat: 1.2959, long: 103.8535, address: '333 N Bridge Rd #01-12' },
 ]
 
+// Colour-coding of roasters according to respective brand colours
 const ROASTER_COLOURS: Record<string, string> = {
     'Homeground Coffee Roasters': '#5d6e5c',
     'Nylon Coffee': '#6ad1be',
@@ -46,43 +49,88 @@ const ROASTER_COLOURS: Record<string, string> = {
     'The Community Coffee': '#e43c90'
 };
 
+// Helper function to center map around user location once entered
+function MapCenter({ location }: { location: [number, number] | null }) {
+    const map = useMap();
+    useEffect(() => {
+        if (location) {
+            map.setView(location, 14);
+        }
+    }, [location]);
+    return null;
+}
+
+// Page
 export default function RoasterMap() {
+
+    // Postal code radius search
+    // Search vicinity by postal code
+    const [postalCode, setPostalCode] = useState('');
+    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+    async function geoPostalCode(postal: string) {
+        const res = await fetch(`https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${postal}&returnGeom=Y&getAddrDetails=Y`);
+        const data = await res.json();
+        const result = data.results?.[0];
+        if (result) {
+            setUserLocation([parseFloat(result.LATITUDE), parseFloat(result.LONGITUDE)]);
+        }
+    }
+
     return (
-        <div className='map_component'>
-            <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px' }}>
-                <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
-                {
-                    ROASTERS.map(roaster => {
-                        const icon = L.divIcon({
-                            className: '',
-                            html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
-                            iconSize: [12, 12],
-                            iconAnchor: [6, 6],
-                            popupAnchor: [0, 10],
-                        });
-                        return (
-                            <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={icon}>
-                                <Popup>
-                                    <strong>{roaster.name}</strong>
-                                    <br />
-                                    <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
-                                    <br />
-                                    <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#6F6962' }}>{roaster.address}</span>
-                                </Popup>
+        <div className='roaster_page'>
+            <div className='area_search'>
+                <input type='number' value={postalCode} onChange={e => setPostalCode(e.target.value)} placeholder="Enter postal code" />
+                <button onClick={() => geoPostalCode(postalCode)}>Search</button>
+            </div>
+            <div className='map_component'>
+                <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px' }}>
+                    <MapCenter location={userLocation} />
+                    <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
+                    {
+                        ROASTERS.map(roaster => {
+                            const icon = L.divIcon({
+                                className: 'roaster_icon',
+                                html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
+                                iconSize: [12, 12],
+                                iconAnchor: [6, 6],
+                                popupAnchor: [0, 10],
+                            });
+                            return (
+                                <Marker key={roaster.name + ' | ' + roaster.branch} position={[roaster.lat, roaster.long]} icon={icon}>
+                                    <Popup>
+                                        <strong>{roaster.name}</strong>
+                                        <br />
+                                        <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
+                                        <br />
+                                        <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#6F6962' }}>{roaster.address}</span>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })
+                    }
+                    {
+                        userLocation && (
+                            <Marker position={userLocation} icon={L.divIcon({
+                                className: 'user_pin',
+                                html: `<div style="width:14px; height:14px; border-radius:50%; background:#e84d3f; border:2px solid #fff"></div>`,
+                                iconSize: [14, 14],
+                                iconAnchor: [7, 7],
+                            })}>
+                                <Popup>You are here</Popup>
                             </Marker>
-                        );
-                    })
-                }
-            </MapContainer>
-            <div className='map_legend' style={{ display: 'flex', flexWrap: 'wrap', gap: '25px', marginTop: '8px' }}>
-                {
-                    Object.entries(ROASTER_COLOURS).map(([name, colour]) => (
-                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', color: '#2b2926' }}>
-                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colour, border: '1px solid #fff', boxShadow: '0 1px 2px rgba(0, 0, 0, 0.3)', flexShrink: 0 }} />
-                            {name}
-                        </div>
-                    ))
-                }
+                        )
+                    }
+                </MapContainer>
+                <div className='map_legend' style={{ display: 'flex', flexWrap: 'wrap', gap: '25px', marginTop: '8px' }}>
+                    {
+                        Object.entries(ROASTER_COLOURS).map(([name, colour]) => (
+                            <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', color: '#2b2926' }}>
+                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colour, border: '1px solid #fff', boxShadow: '0 1px 2px rgba(0, 0, 0, 0.3)', flexShrink: 0 }} />
+                                {name}
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
         </div>
     );
