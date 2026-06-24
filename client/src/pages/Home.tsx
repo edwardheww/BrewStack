@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { type Bean } from '../types/index.js';
+import NavBar from '../components/NavBar.js';
 
 function money(price?: number) {
     if (!price) return 'N/A';
@@ -20,16 +21,7 @@ export default function Home() {
     const freshDrops = useMemo(() => beans.slice(0, 3), [beans]);
     return (
         <div className="home-page">
-            <header className="site-nav">    {/* Top navigation bar reused */}
-                <Link className="brand home-brand" to="/">BrewStack</Link>
-                <nav>
-                    <Link to="/catalog">Catalog</Link>
-                    <a>Roasters</a>
-                    <Link to="/find-my-coffee">Find My Bean</Link>
-                    <a>Saved Beans</a>
-                </nav>
-                <button className="search-button" aria-label="Search">⌕</button>
-            </header>
+            <NavBar />
 
             <main>
                 <section className="home-hero">

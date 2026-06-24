@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { type Bean } from '../types/index.js';
+import NavBar from '../components/NavBar.js';
 
 type AnswerKey = 'brew' | 'flavour' | 'adventure' | 'cup' | 'occasion';
 
@@ -41,20 +41,6 @@ const questions: Question[] = [ // questions for the quiz to figure out what kin
     },
 ];
 
-function NavBar() { // nav buttons on the top of pages to navigate between pages
-    return (
-        <header className="site-nav">
-            <Link className="brand home-brand" to="/">BrewStack</Link>
-            <nav>
-                <Link to="/catalog">Catalog</Link>
-                <a>Roasters</a>
-                <Link className="active-nav" to="/find-my-coffee">Find My Bean</Link>
-                <a>Saved Beans</a>
-            </nav>
-            <button className="search-button" aria-label="Search">⌕</button>
-        </header>
-    );
-}
 
 function splitNotes(notes?: string) { // Splits a bean's tasting notes into smaller note pills.
     if (!notes) return [];
