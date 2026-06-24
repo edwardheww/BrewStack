@@ -22,15 +22,15 @@ const ROASTERS = [
     { name: 'Tiong Hoe Specialty Coffee', branch: 'Woodleigh Mall', lat: 1.3390, long: 103.8716, address: '11 Bidadari Park Dr #B1-32/33' },
 
     // ALCHEMIST
-    { name: 'Alchemist', branch: 'International Plaza', lat: 1.2764, long: 103.8458, address: '10 Anson Rd #01-34' },
-    { name: 'Alchemist', branch: 'The Mill', lat: 1.2853, long: 103.8097, address: '5 Jln Kilang #02-02' },
-    { name: 'Alchemist', branch: 'The Heeren', lat: 1.3023, long: 103.8376, address: '260 Orchard Rd #01-ORA' },
-    { name: 'Alchemist', branch: 'Plaza Singapura', lat: 1.3003, long: 103.8455, address: '68 Orchard Rd #01-50' },
-    { name: 'Alchemist', branch: '71 Robinson', lat: 1.2785, long: 103.8489, address: '71 Robinson Rd #01-01' },
-    { name: 'Alchemist', branch: 'Asia Square', lat: 1.2795, long: 103.8511, address: '8 Marina Vw #01-07' },
-    { name: 'Alchemist', branch: 'Ocean Financial Centre', lat: 1.2834, long: 103.8518, address: '10 Collyer Quay #01-K1' },
-    { name: 'Alchemist', branch: 'Arab Street', lat: 1.3018, long: 103.8586, address: '119 Arab St' },
-    { name: 'Alchemist', branch: 'Funan', lat: 1.2916, long: 103.8506, address: '107 N Bridge Rd #01-01' },
+    { name: 'Alchemist Coffee', branch: 'International Plaza', lat: 1.2764, long: 103.8458, address: '10 Anson Rd #01-34' },
+    { name: 'Alchemist Coffee', branch: 'The Mill', lat: 1.2853, long: 103.8097, address: '5 Jln Kilang #02-02' },
+    { name: 'Alchemist Coffee', branch: 'The Heeren', lat: 1.3023, long: 103.8376, address: '260 Orchard Rd #01-ORA' },
+    { name: 'Alchemist Coffee', branch: 'Plaza Singapura', lat: 1.3003, long: 103.8455, address: '68 Orchard Rd #01-50' },
+    { name: 'Alchemist Coffee', branch: '71 Robinson', lat: 1.2785, long: 103.8489, address: '71 Robinson Rd #01-01' },
+    { name: 'Alchemist Coffee', branch: 'Asia Square', lat: 1.2795, long: 103.8511, address: '8 Marina Vw #01-07' },
+    { name: 'Alchemist Coffee', branch: 'Ocean Financial Centre', lat: 1.2834, long: 103.8518, address: '10 Collyer Quay #01-K1' },
+    { name: 'Alchemist Coffee', branch: 'Arab Street', lat: 1.3018, long: 103.8586, address: '119 Arab St' },
+    { name: 'Alchemist Coffee', branch: 'Funan', lat: 1.2916, long: 103.8506, address: '107 N Bridge Rd #01-01' },
 
     // COMMUNITY
     { name: 'The Community Coffee', branch: 'Hamilton', lat: 1.3116, long: 103.8614, address: '38 Hamilton Rd' },
@@ -38,29 +38,39 @@ const ROASTERS = [
     { name: 'The Community Coffee', branch: 'Odeon', lat: 1.2959, long: 103.8535, address: '333 N Bridge Rd #01-12' },
 ]
 
-const defaultIcon = L.divIcon({
-    className: '',
-    html: `<div style="width:12px; height:12px; border-radius:50%; background:#785e38; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
-    iconSize: [12, 12],
-    iconAnchor: [6, 6],
-    popupAnchor: [0, 10],
-})
+const ROASTER_COLOURS: Record<string, string> = {
+    'Homeground Coffee Roasters': '#4c5a4b',
+    'Nylon Coffee': '#6ad1be',
+    'Tiong Hoe Specialty Coffee': '#3a5633',
+    'Alchemist Coffee': '#042c47',
+    'The Community Coffee': '#e43c90'
+};
 
 export default function RoasterMap() {
     return (
         <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: "100%" }}>
             <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
             {
-                ROASTERS.map(roaster => (
-                    <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={defaultIcon}>
-                        <Popup>
-                            <strong>{roaster.name}</strong>
-                            <br />
-                            <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
-                            <span style={{ fontSize: '8px', color: '#6F6962' }}>{roaster.address}</span>
-                        </Popup>
-                    </Marker>
-                ))
+                ROASTERS.map(roaster => {
+                    const icon = L.divIcon({
+                        className: '',
+                        html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6],
+                        popupAnchor: [0, 10],
+                    });
+                    return (
+                        <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={icon}>
+                            <Popup>
+                                <strong>{roaster.name}</strong>
+                                <br />
+                                <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
+                                <br />
+                                <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#6F6962' }}>{roaster.address}</span>
+                            </Popup>
+                        </Marker>
+                    );
+                })
             }
         </MapContainer>
     );
