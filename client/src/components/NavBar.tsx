@@ -5,6 +5,7 @@ export default function NavBar() {
         <header className="site-nav">
             <Link className="brand home-brand" to="/">BrewStack</Link>
             <nav>
+                <Link to="/">Home</Link>
                 <Link to="/catalog">Catalog</Link>
                 <Link to="/roasters">Roasters</Link>
                 <Link to="/find-my-coffee">Find My Coffee</Link>
