@@ -48,30 +48,42 @@ const ROASTER_COLOURS: Record<string, string> = {
 
 export default function RoasterMap() {
     return (
-        <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: "100%" }}>
-            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
-            {
-                ROASTERS.map(roaster => {
-                    const icon = L.divIcon({
-                        className: '',
-                        html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
-                        iconSize: [12, 12],
-                        iconAnchor: [6, 6],
-                        popupAnchor: [0, 10],
-                    });
-                    return (
-                        <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={icon}>
-                            <Popup>
-                                <strong>{roaster.name}</strong>
-                                <br />
-                                <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
-                                <br />
-                                <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#6F6962' }}>{roaster.address}</span>
-                            </Popup>
-                        </Marker>
-                    );
-                })
-            }
-        </MapContainer>
+        <div className='map_component'>
+            <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: "100%" }}>
+                <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
+                {
+                    ROASTERS.map(roaster => {
+                        const icon = L.divIcon({
+                            className: '',
+                            html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
+                            iconSize: [12, 12],
+                            iconAnchor: [6, 6],
+                            popupAnchor: [0, 10],
+                        });
+                        return (
+                            <Marker key={roaster.name} position={[roaster.lat, roaster.long]} icon={icon}>
+                                <Popup>
+                                    <strong>{roaster.name}</strong>
+                                    <br />
+                                    <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
+                                    <br />
+                                    <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#6F6962' }}>{roaster.address}</span>
+                                </Popup>
+                            </Marker>
+                        );
+                    })
+                }
+            </MapContainer>
+            <div className='map_legend' style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px' }}>
+                {
+                    Object.entries(ROASTER_COLOURS).map(([name, colour]) => (
+                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', color: '#2b2926' }}>
+                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colour, border: '2px solid #fff', flexShrink: 0 }} />
+                            {name}
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
     );
 }
