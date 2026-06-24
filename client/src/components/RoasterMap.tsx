@@ -39,10 +39,10 @@ const ROASTERS = [
 ]
 
 const ROASTER_COLOURS: Record<string, string> = {
-    'Homeground Coffee Roasters': '#4c5a4b',
+    'Homeground Coffee Roasters': '#5d6e5c',
     'Nylon Coffee': '#6ad1be',
-    'Tiong Hoe Specialty Coffee': '#3a5633',
-    'Alchemist Coffee': '#042c47',
+    'Tiong Hoe Specialty Coffee': '#43643b',
+    'Alchemist Coffee': '#07446e',
     'The Community Coffee': '#e43c90'
 };
 
