@@ -74,10 +74,10 @@ export default function RoasterMap() {
                     })
                 }
             </MapContainer>
-            <div className='map_legend' style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginTop: '8px' }}>
+            <div className='map_legend' style={{ display: 'flex', flexWrap: 'wrap', gap: '25px', marginTop: '8px' }}>
                 {
                     Object.entries(ROASTER_COLOURS).map(([name, colour]) => (
-                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', color: '#2b2926' }}>
+                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', color: '#2b2926' }}>
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colour, border: '1px solid #fff', boxShadow: '0 1px 2px rgba(0, 0, 0, 0.3)', flexShrink: 0 }} />
                             {name}
                         </div>
