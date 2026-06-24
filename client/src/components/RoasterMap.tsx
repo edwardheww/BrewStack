@@ -13,7 +13,7 @@ const ROASTERS = [
     { name: 'Tiong Hoe Specialty Coffee', branch: 'Queenstown', lat: 1.2910, long: 103.8031, address: '170 Stirling Rd #01-1133' },
     { name: 'Tiong Hoe Specialty Coffee', branch: 'Balmoral Plaza', lat: 1.3167, long: 103.8353, address: '271 Bukit Timah Rd #01-08' },
     { name: 'Tiong Hoe Specialty Coffee', branch: 'Parkway Parade', lat: 1.3011, long: 103.9053, address: '80 Marine Parade Rd #03-28' },
-    { name: 'Tiong Hoe Specialty Coffee', branch: 'one-north', lat: 1.2999, long: 103.7880, address: '1 Fusionopolis Pl #01-28/29' },
+    { name: 'Tiong Hoe Specialty Coffee', branch: 'One North', lat: 1.2999, long: 103.7880, address: '1 Fusionopolis Pl #01-28/29' },
     { name: 'Tiong Hoe Specialty Coffee', branch: 'SingPost Centre', lat: 1.3189, long: 103.8940, address: '10 Eunos Rd 8 #01-117' },
     { name: 'Tiong Hoe Specialty Coffee', branch: 'Raffles Place', lat: 1.2842, long: 103.8511, address: '1 Raffles Pl B1-34' },
     { name: 'Tiong Hoe Specialty Coffee', branch: 'SBF Centre', lat: 1.2783, long: 103.8479, address: '160 Robinson Rd #01-03' },
@@ -56,7 +56,8 @@ export default function RoasterMap() {
                         <Popup>
                             <strong>{roaster.name}</strong>
                             <br />
-                            <span style={{ fontSize: '11px', color: '#6F6962' }}>{roaster.branch}</span>
+                            <span style={{ fontSize: '11px', color: '#6F6962' }}><strong>{roaster.branch}</strong></span>
+                            <span style={{ fontSize: '8px', color: '#6F6962' }}>{roaster.address}</span>
                         </Popup>
                     </Marker>
                 ))
