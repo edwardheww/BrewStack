@@ -49,7 +49,7 @@ const ROASTER_COLOURS: Record<string, string> = {
 export default function RoasterMap() {
     return (
         <div className='map_component'>
-            <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: "100%" }}>
+            <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '2px solid #fff', borderRadius: '8px' }}>
                 <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
                 {
                     ROASTERS.map(roaster => {
