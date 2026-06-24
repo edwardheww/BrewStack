@@ -79,8 +79,10 @@ export default function RoasterMap() {
     return (
         <div className='roaster_page'>
             <div className='area_search'>
-                <input type='number' value={postalCode} onChange={e => setPostalCode(e.target.value)} placeholder="Enter postal code" />
-                <button onClick={() => geoPostalCode(postalCode)}>Search</button>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e3ded6', borderRadius: '4px', background: '#fff', padding: '0 12px', gap: '8px', width: 'fit-content' }}>
+                    <input type='number' value={postalCode} onChange={e => setPostalCode(e.target.value)} placeholder="Enter postal code" style={{ border: 'none', outline: 'none', fontSize: '14px', padding: '10px 0', background: 'transparent', width: '160px' }} />
+                    <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
+                </div>
             </div>
             <div className='map_component'>
                 <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px' }}>
@@ -112,9 +114,9 @@ export default function RoasterMap() {
                         userLocation && (
                             <Marker position={userLocation} icon={L.divIcon({
                                 className: 'user_pin',
-                                html: `<div style="width:14px; height:14px; border-radius:50%; background:#e84d3f; border:2px solid #fff"></div>`,
-                                iconSize: [14, 14],
-                                iconAnchor: [7, 7],
+                                html: `<div style="font-size:20px; line-height:1">📍</div>`,
+                                iconSize: [20, 20],
+                                iconAnchor: [10, 10],
                             })}>
                                 <Popup>You are here</Popup>
                             </Marker>
