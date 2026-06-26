@@ -57,7 +57,7 @@ body {
 }
 
 .search-button {
-  margin-left: auto;
+  margin-left: 0;
   border: 0;
   background: transparent;
   font-size: 28px;
@@ -1118,4 +1118,22 @@ body {
 
 .login-message {
   margin-top: 14px !important;
+}
+
+.nav-auth-link,
+.nav-auth-button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #4a2418;
+  text-decoration: none;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nav-auth-link + .search-button,
+.nav-auth-button + .search-button {
+  margin-left: 18px;
 }
