@@ -7,6 +7,7 @@ import { upsertScrapedBeans } from "../db/upsert.js";
 import { NylonScraper } from "../scraper/scrapers/NylonScraper.js";
 import { TiongHoeScraper } from "../scraper/scrapers/TiongHoeScraper.js";
 import { AlchemistScraper } from "../scraper/scrapers/AlchemistScraper.js";
+import { getUserFromRequest } from "../auth/getUser.js";
 
 export const routes = Router();
 
@@ -67,6 +68,109 @@ export function notifyClients() {
     console.log(`Notifying ${clients.length} clients`);
     clients.forEach(res => res.write('data: update\n\n'));
 }
+
+routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by the currently logged-in user.
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const savedBeans = await prisma.savedBean.findMany({
+            where: {
+                userId: user.id,
+            },
+            include: {
+                bean: {
+                    include: {
+                        roaster: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        res.json(savedBeans.map(saved => saved.bean));
+    } catch(error) {
+        console.error("Error fetching saved beans:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the current user.
+    try {
+        const user = await getUserFromRequest(req);
+
+        if (!user) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const { beanId } = req.body;
+
+        if (!beanId) {
+            res.status(400).json({ error: "Missing beanId" });
+            return;
+        }
+
+        await prisma.user.upsert({
+            where: {
+                id: user.id,
+            },
+            update: {
+                email: user.email,
+            },
+            create: {
+                id: user.id,
+                email: user.email,
+            },
+        });
+
+        const savedBean = await prisma.savedBean.upsert({
+            where: {
+                userId_beanId: {
+                    userId: user.id,
+                    beanId,
+                },
+            },
+            update: {},
+            create: {
+                userId: user.id,
+                beanId,
+            },
+        });
+        res.json(savedBean);
+    } catch(error) {
+        console.error("Error saving bean:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+routes.delete("/me/saved-beans/:beanId", async (req, res) => { // Remove one saved bean for the current user.
+    try {
+        const user = await getUserFromRequest(req);
+
+        if (!user) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const { beanId } = req.params;
+        await prisma.savedBean.deleteMany({
+            where: {
+                userId: user.id,
+                beanId,
+            },
+        });
+
+        res.json({ ok: true });
+    } catch(error) {
+        console.error("Error unsaving bean:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Temporary testing route: manually runs the scraper until the automatic scraper is finalized.
 routes.post("/scrape/homeground", async (_req, res) => {
