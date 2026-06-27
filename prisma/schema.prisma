@@ -32,4 +32,26 @@ model Bean {
 
   roasterId String
   roaster Roaster @relation(fields: [roasterId], references: [id])
+
+    savedBy SavedBean[]
+}
+
+model User {
+  id String @id
+  email String? @unique
+  createdAt DateTime @default(now())
+
+  savedBeans SavedBean[]
+}
+
+model SavedBean {
+  id        String   @id @default(cuid())
+  userId    String
+  beanId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  bean Bean @relation(fields: [beanId], references: [id])
+
+  @@unique([userId, beanId])
 }
