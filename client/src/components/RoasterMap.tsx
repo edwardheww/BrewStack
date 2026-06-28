@@ -131,14 +131,17 @@ export default function RoasterMap() {
                     }
                     {
                         userLocation && (
-                            <Marker position={userLocation} icon={L.divIcon({
-                                className: 'user_pin',
-                                html: `<div style="font-size:20px; line-height:1">📍</div>`,
-                                iconSize: [20, 20],
-                                iconAnchor: [10, 10],
-                            })}>
-                                <Popup>You are here</Popup>
-                            </Marker>
+                            <>
+                                <Marker position={userLocation} icon={L.divIcon({
+                                    className: 'user_pin',
+                                    html: `<div style="font-size:20px; line-height:1">📍</div>`,
+                                    iconSize: [20, 20],
+                                    iconAnchor: [10, 10],
+                                })}>
+                                    <Popup>You are here</Popup>
+                                </Marker>
+                                <Circle center={userLocation} radius={radius * 1000} pathOptions={{ color: '#c56a49', fillColor: '#c56a49', fillOpacity: 0.1, weight: 1.5 }} />
+                            </>
                         )
                     }
                 </MapContainer>
