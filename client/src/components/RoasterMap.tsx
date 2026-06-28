@@ -67,6 +67,7 @@ export default function RoasterMap() {
     // Search vicinity by postal code
     const [postalCode, setPostalCode] = useState('');
     const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+    const [radius, setRadius] = useState(2);
     async function geoPostalCode(postal: string) {
         const res = await fetch(`https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${postal}&returnGeom=Y&getAddrDetails=Y`);
         const data = await res.json();
@@ -75,6 +76,17 @@ export default function RoasterMap() {
             setUserLocation([parseFloat(result.LATITUDE), parseFloat(result.LONGITUDE)]);
         }
     }
+    function getDistanceKm(lat1: number, long1: number, lat2: number, long2: number) {
+        const R = 6371; // Earth radius
+        const dLat = (lat2 - lat1) * Math.PI / 180; // Degree to radian conversion
+        const dLong = (long2 - long1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLong / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    const visibleRoasters = userLocation
+        ? ROASTERS.filter(r => getDistanceKm(userLocation[0], userLocation[1], r.lat, r.long) <= radius)
+        : ROASTERS;
 
     return (
         <div className='roaster_page'>
@@ -84,12 +96,19 @@ export default function RoasterMap() {
                     <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
                 </div>
             </div>
+            {userLocation && (
+                <div className='radius_selector' style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+                    <input type="range" min={1} max={50} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: '200px', cursor: 'pointer' }} />
+                    <input type="number" min={1} max={50} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: '60px', border: '1px solid #e3ded6', borderRadius: '6px', padding: '4px 8px', fontSize: '14px' }} />
+                    <span style={{ fontSize: '13px', color: '#6f6962' }}>km</span>
+                </div>
+            )}
             <div className='map_component'>
                 <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px' }}>
                     <MapCenter location={userLocation} />
                     <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
                     {
-                        ROASTERS.map(roaster => {
+                        visibleRoasters.map(roaster => {
                             const icon = L.divIcon({
                                 className: 'roaster_icon',
                                 html: `<div style="width:12px; height:12px; border-radius:50%; background:${ROASTER_COLOURS[roaster.name]}; border:2px solid #fff; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3)"></div>`,
