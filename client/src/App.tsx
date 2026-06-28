@@ -4,6 +4,7 @@ import FindMyCoffee from "./pages/FindMyCoffee";
 import Home from "./pages/Home";
 import Roasters from "./pages/Roasters";
 import Login from "./pages/Login";
+import SavedBeans from "./pages/SavedBeans";
 
 export default function App() {
     return (
@@ -14,6 +15,7 @@ export default function App() {
                 <Route path="/find-my-coffee" element={<FindMyCoffee />} />
                 <Route path="/roasters" element={<Roasters />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/saved-beans" element={<SavedBeans />} />
             </Routes>
         </BrowserRouter>
     );

@@ -31,7 +31,7 @@ export default function NavBar() {
                 <Link to="/catalog">Catalog</Link>
                 <Link to="/roasters">Roasters</Link>
                 <Link to="/find-my-coffee">Find My Coffee</Link>
-                <a> Saved Beans</a>
+                <Link to="/saved-beans">Saved Beans</Link>
             </nav>
             {email ? (
                 <button className="nav-auth-button" onClick={logOut}>Logout</button>

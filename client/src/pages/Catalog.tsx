@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { type Bean } from '../types/index.js';
 import NavBar from '../components/NavBar.js';
+import { supabase } from '../lib/supabase.js';
 
 function splitNotes(notes?: string) {
     if (!notes) return [];
@@ -66,6 +67,26 @@ function BeanCard({ bean }: { bean: Bean; }) {
     const notes = splitNotes(bean.flavourNotes);
     const origin = bean.region?.trim() || 'N/A';
 
+    async function saveBean(event: React.MouseEvent) {  // Save the current bean for the logged-in user
+        event.preventDefault();
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        await fetch(`${import.meta.env.VITE_API_URL}/me/saved-beans`, { // Ask the backend to create a saved-bean record for this user and bean
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ beanId: bean.id }),
+        });
+    }
+
     return (
         <a 
             className="bean-card-link" // clicking on each product opens the actual roaster's product page in a new tab
@@ -118,7 +139,8 @@ function BeanCard({ bean }: { bean: Bean; }) {
 
                         </div>
                     </div>
-
+                    
+                    <button className="save-bean-button" onClick={saveBean}>Save Bean</button>
                     <p className="updated">Updated recently</p>
                 </div>
             </article>
