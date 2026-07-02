@@ -578,16 +578,17 @@ body {
 }
 
 .result-wrap {
-  width: min(560px, 100%);
+  width: min(1120px, calc(100vw - 120px));
   margin: 36px auto 0;
 }
 
 .match-comparison-grid {
-    display: grid;
-    grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.15fr) minmax(260px, 1fr);
-    gap: 32px;
-    align-items: center;
-    margin-top: 28px;
+  display: grid;
+  grid-template-columns: 320px 380px 320px;
+  gap: 36px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 34px;
 }
 
 .ranked-card {
@@ -597,9 +598,9 @@ body {
 }
 
 .best-match-card {
-    transform: translateY(-28px) scale(1.04);
-    z-index: 2;
-    box-shadow: 0 26px 60px rgba(45, 38, 30, 0.22);
+  transform: translateY(0) scale(1.04);
+  z-index: 2;
+  box-shadow: 0 26px 60px rgba(45, 38, 30, 0.22);
 }
 
 .rank-badge {
@@ -621,6 +622,12 @@ body {
     background: #111;
 }
 
+.matches-heading {
+  width: 380px;
+  margin: 0 auto;
+  text-align: left;
+}
+
 .recommended-badge {
     position: absolute;
     top: 24px;
@@ -634,22 +641,32 @@ body {
 }
 
 .ranked-actions {
-    display: grid;
-    grid-template-columns: auto 1fr 1fr;
-    gap: 12px;
-    align-items: center;
-    margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 92px 104px;
+  gap: 12px;
+  align-items: center;
+  margin-top: 0;
+  padding: 14px 18px 16px;
+  border-top: 1px solid #e4ded6;
+  background: #fff;
 }
 
 .ranked-actions button,
 .ranked-actions a {
-    border: 1px solid #d8d0c6;
-    background: white;
-    color: #1f1b17;
-    text-align: center;
-    padding: 12px 14px;
-    text-decoration: none;
-    cursor: pointer;
+  height: 34px;
+  border: 1px solid #d8d0c6;
+  background: #fff;
+  color: #1f1b17;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 12px;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .best-match-card .ranked-actions a {
@@ -659,25 +676,42 @@ body {
 }
 
 .match-points {
-    color: #1f6ed4;
-    font-size: 18px;
-    white-space: nowrap;
+  color: #1f6ed4;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .try-again-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+  width: 1120px;
+  max-width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin: 58px auto 0;
 }
 
 @media (max-width: 1100px) {
-    .match-comparison-grid {
-        grid-template-columns: 1fr;
-    }
+  .result-wrap {
+    width: min(560px, calc(100vw - 32px));
+  }
 
-    .best-match-card {
-        transform: none;
-    }
+  .matches-heading {
+    width: 100%;
+  }
+
+  .match-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ranked-card:not(.best-match-card),
+  .best-match-card {
+    transform: none;
+  }
+
+  .try-again-row {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .eyebrow,
@@ -689,6 +723,10 @@ body {
   font-size: 11px;
 }
 
+.ranked-card:not(.best-match-card) {
+  transform: translateY(38px);
+}
+
 .match-card {
   border: 1px solid #ded9d2;
   background: #fff;
@@ -696,7 +734,7 @@ body {
 
 .match-image {
   position: relative;
-  height: 360px;
+  height: 280px;
   background: #e9e5df;
   overflow: hidden;
   display: flex;

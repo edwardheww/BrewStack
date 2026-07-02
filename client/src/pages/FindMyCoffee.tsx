@@ -267,8 +267,10 @@ export default function FindMyCoffee() { //page components
                     </section>
                 ) : showResult ? (
                     <section className="result-wrap">
-                        <p className="eyebrow">Your Matches</p>
-                        <h2> We found the coffee for you.</h2>
+                        <div className="matches-heading">
+                            <p className="eyebrow">Your Matches</p>
+                            <h2> We found the coffee for you.</h2>
+                        </div>
 
                         {matches.length > 0 ? (
                             <>
