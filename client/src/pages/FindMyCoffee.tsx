@@ -336,7 +336,9 @@ export default function FindMyCoffee() { //page components
                                                         <span className="meta-label">Why this matches</span>
                                                         <ul>
                                                             {(match.reasons.length ? match.reasons.slice(0, 3) : ['It is one of the freshest beans in your catalog.']).map(reason => (
-                                                                <li key={reason}>{reason}</li>
+                                                                <li key={reason}>
+                                                                    <span className="reason-tick">✓</span>
+                                                                    {reason}</li>
                                                             ))}
                                                         </ul>
                                                     </div>
