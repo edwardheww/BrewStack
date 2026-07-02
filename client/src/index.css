@@ -582,6 +582,104 @@ body {
   margin: 36px auto 0;
 }
 
+.match-comparison-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.15fr) minmax(260px, 1fr);
+    gap: 32px;
+    align-items: center;
+    margin-top: 28px;
+}
+
+.ranked-card {
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 18px 40px rgba(45, 38, 30, 0.14);
+}
+
+.best-match-card {
+    transform: translateY(-28px) scale(1.04);
+    z-index: 2;
+    box-shadow: 0 26px 60px rgba(45, 38, 30, 0.22);
+}
+
+.rank-badge {
+    position: absolute;
+    top: -18px;
+    left: 18px;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: #b8aa97;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    z-index: 3;
+}
+
+.best-match-card .rank-badge {
+    background: #111;
+}
+
+.recommended-badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: #111;
+    color: white;
+    padding: 8px 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    z-index: 3;
+}
+
+.ranked-actions {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.ranked-actions button,
+.ranked-actions a {
+    border: 1px solid #d8d0c6;
+    background: white;
+    color: #1f1b17;
+    text-align: center;
+    padding: 12px 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.best-match-card .ranked-actions a {
+    background: #171412;
+    color: white;
+    border-color: #171412;
+}
+
+.match-points {
+    color: #1f6ed4;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.try-again-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+@media (max-width: 1100px) {
+    .match-comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .best-match-card {
+        transform: none;
+    }
+}
+
 .eyebrow,
 .match-roaster {
   margin: 0 0 8px;

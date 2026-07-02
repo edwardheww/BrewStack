@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { type Bean } from '../types/index.js';
 import NavBar from '../components/NavBar.js';
+import { supabase } from '../lib/supabase.js';
 
 type AnswerKey = 'brew' | 'flavour' | 'adventure' | 'cup' | 'occasion';
 
@@ -159,13 +160,18 @@ function recommendBean(beans: Bean[], answers: AnswerMap) { //score all beans, r
     .filter(item => item.score >= 0)
     .sort((a, b) => b.score - a.score);
 
-     if (answers.occasion === 'Surprise me') {
-        const topFive = scored.slice(0, 5);
-        return topFive[Math.floor(Math.random() * topFive.length)];
+    if (answers.occasion === 'Surprise me') {
+        return scored.slice(0,8).sort(() => Math.random() - 0.5).slice(0,3);
     }
 
-    return scored[0];
+    return scored.slice(0, 3); // return top three ranked matches
 }
+
+function matchPoints(score: number, bestScore: number) { // scale the score to 100 for display
+    if (bestScore <= 0) return 70;
+    return Math.max(60, Math.round((score / bestScore) * 100));
+}
+
 
 export default function FindMyCoffee() { //page components
     const [beans, setBeans] = useState<Bean[]>([]);
@@ -186,10 +192,14 @@ export default function FindMyCoffee() { //page components
     const currentQuestion = questions[step];
     const selectedAnswer = answers[currentQuestion.key];
 
-    const match = useMemo(() => { //calc final reccomended bean only after user finishes quiz
-        if (!showResult) return undefined;
+    const matches = useMemo(() => {
+        if (!showResult) return [];
         return recommendBean(beans, answers);
     }, [beans, answers, showResult]);
+
+    const bestScore = matches[0]?.score ?? 0;
+
+    const displayMatches = [matches[1], matches[0], matches[2]].filter(Boolean); // visual order 2nd place, 1st place, 3rd place.
 
     function chooseOption(option: string) {
         setAnswers(prev => ({
@@ -218,6 +228,25 @@ export default function FindMyCoffee() { //page components
         setFinding(false);
     }
 
+    async function saveBean(beanId: string) {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+
+        if (!token) {
+            window.location.href = '/login'; // if not logged in, redirect to login page
+            return;
+        }
+
+        await fetch(`${import.meta.env.VITE_API_URL}/me/saved-beans`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ beanId }),
+        });
+    }
+
     const progress = ((step + 1) / questions.length) * 100;
 
     return (
@@ -238,73 +267,94 @@ export default function FindMyCoffee() { //page components
                     </section>
                 ) : showResult ? (
                     <section className="result-wrap">
-                        <p className="eyebrow">Your Match</p>
+                        <p className="eyebrow">Your Matches</p>
                         <h2> We found the coffee for you.</h2>
 
-                        {match ? (
-                            <article className = "match-card">
-                                <div className = "match-image">
-                                    {match.bean.imageUrl ? (
-                                        <img src={match.bean.imageUrl} alt={match.bean.name} />
-                                    ) : (
-                                        <span>Reccomended</span>
-                                    )}
-                                    <strong>Reccomended</strong>
-                                    </div>
+                        {matches.length > 0 ? (
+                            <>
+                                <div className="match-comparison-grid">
+                                    {displayMatches.map(match => {
+                                        const actualRank = matches.findIndex(item => item.bean.id === match.bean.id) + 1;
+                                        const isBest = actualRank === 1;
+                                        const points = matchPoints(match.score, bestScore);
 
-                                    <div className="match-body">
-                                        <p className="match-roaster">{match.bean.roaster?.name || 'Local Roaster'}</p>
-                                        <h3>{match.bean.name}</h3>
+                                        return (
+                                            <article className={isBest ? 'match-card ranked-card best-match-card' : 'match-card ranked-card'} key={match.bean.id}>
+                                                <div className="rank-badge">{actualRank === 1 ? '1st' : actualRank === 2 ? '2nd' : '3rd'}</div>
 
-                                        <div className="notes-list">
-                                            {splitNotes(match.bean.flavourNotes).length > 0 ? (
-                                                splitNotes(match.bean.flavourNotes).map(note => (
-                                                    <span className="note-pill" key={note}>{note}</span>
-                                                ))
-                                            ) : (
-                                                <span className="note-pill">N/A</span>
-                                            )}
-                                        </div>
+                                                {isBest && <strong className="recommended-badge">Recommended</strong>}
 
-                                        <div className = "match-meta">
-                                            <div>
-                                                <span className="meta-label">Origin</span>
-                                                <p>{match.bean.region || 'N/A'}</p>
-                                            </div>
-                                            <div>
-                                                <span className="meta-label">Process</span>
-                                                <p>{match.bean.processingMethod || 'N/A'}</p>
-                                            </div>
-                                            <div>
-                                                <span className="meta-label">Varietal</span>
-                                                <p>{match.bean.varietal || 'N/A'}</p>
-                                            </div>
-                                            <div>
-                                                <span className="meta-label">Brew Style</span>
-                                                <p>{match.bean.roastLevel || 'N/A'}</p>
-                                            </div>
-                                            <div>
-                                                <span className="meta-label">Price</span>
-                                                <p>{money(match.bean.price)}</p>
-                                            </div>
-                                        </div>
+                                                <div className="match-image">
+                                                    {match.bean.imageUrl ? (
+                                                        <img src={match.bean.imageUrl} alt={match.bean.name} />
+                                                    ) : (
+                                                        <span>Recommended</span>
+                                                    )}
+                                                </div>
 
-                                        <div className="why-box">
-                                            <span className="meta-label">Why this match?</span>
-                                            <ul>
-                                                {(match.reasons.length ? match.reasons.slice(0, 3) : ['It is one of the freshest beans in your catalog.']).map(reason => (
-                                                    <li key={reason}>{reason}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
+                                                <div className="match-body">
+                                                    <p className="match-roaster">{match.bean.roaster?.name || 'Local Roaster'}</p>
+                                                    <h3>{match.bean.name}</h3>
 
-                                        <div className="result-actions">
-                                            <a className="primary-action" href={match.bean.url} target="_blank" rel="noreferrer">View Coffee</a>
-                                            <button className="secondary-action" onClick={restart}>↻ Try Again</button>
-                                        </div>
-                                    </div>
-                            </article>
-                        ) : (
+                                                    <div className="notes-list">
+                                                        {splitNotes(match.bean.flavourNotes).length > 0 ? (
+                                                            splitNotes(match.bean.flavourNotes).map(note => (
+                                                                <span className="note-pill" key={note}>{note}</span>
+                                                            ))
+                                                        ) : (
+                                                            <span className="note-pill">N/A</span>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="match-meta">
+                                                        <div>
+                                                            <span className="meta-label">Origin</span>
+                                                            <p>{match.bean.region || 'N/A'}</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="meta-label">Process</span>
+                                                            <p>{match.bean.processingMethod || 'N/A'}</p>
+
+                                                        </div>
+                                                        <div>
+                                                            <span className="meta-label">Varietal</span>
+                                                            <p>{match.bean.varietal || 'N/A'}</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="meta-label">Brew Style</span>
+                                                            <p>{match.bean.roastLevel || 'N/A'}</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="meta-label">Price</span>
+                                                            <p>{money(match.bean.price)}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="why-box">
+                                                        <span className="meta-label">Why this matches</span>
+                                                        <ul>
+                                                            {(match.reasons.length ? match.reasons.slice(0, 3) : ['It is one of the freshest beans in your catalog.']).map(reason => (
+                                                                <li key={reason}>{reason}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+
+                                                    <div className="ranked-actions">
+                                                        <strong className="match-points">{points} pts</strong>
+                                                        <button onClick={() => saveBean(match.bean.id)}>Save Bean</button>
+                                                        <a href={match.bean.url} target="_blank" rel="noreferrer">View Details</a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="try-again-row">
+                                    <button className="secondary-action" onClick={restart}>↻ Try Again</button>
+                                </div>
+                            </>
+                        ):(
                             <div className="empty-match">
                                 <h2>No match found yet.</h2>
                                 <p>Try again after the catalog has been updated.</p>
@@ -312,7 +362,6 @@ export default function FindMyCoffee() { //page components
                             </div>
                         )}
                     </section>
-
                 ) : (
                     <>
                         <section className="quiz-area">
