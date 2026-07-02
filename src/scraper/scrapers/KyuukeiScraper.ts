@@ -46,7 +46,7 @@ export class KyuukeiScraper extends Scraper {
     override async scrape(): Promise<Bean[]> {
         const beans: Bean[] = [];
         const catalogPage = await this.openCatalogPage();
-        await catalogPage.waitForSelector('networkidle');
+        await catalogPage.waitForLoadState('networkidle');
 
         const productUrls = await catalogPage.$$eval('a[href*="/products/"]', links =>
             [...new Set(
