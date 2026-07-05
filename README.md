@@ -6,7 +6,7 @@ BrewStack is a full-stack coffee discovery platform built for Singapore's specia
 
 The motivation behind BrewStack is simple: specialty coffee changes quickly. Roasters rotate beans, introduce limited drops, remove sold-out coffees, and publish tasting information in different formats across their own websites. For a newcomer, this makes discovery confusing. For a more experienced coffee drinker, it creates a lot of tab-switching. BrewStack centralises that information into one interface so users can compare beans across roasters without needing to visit every site manually.
 
-
+Frontend: https://brew-stack.vercel.app
 ---
 
 ## Table of Contents
@@ -1500,6 +1500,13 @@ BrewStack/
 | Styling | CSS |
 
 ---
+
+## Deployment Links
+
+Frontend: https://brew-stack.vercel.app
+
+---
+
 
 ## Contributors
 
