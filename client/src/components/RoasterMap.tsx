@@ -68,12 +68,17 @@ export default function RoasterMap() {
     const [postalCode, setPostalCode] = useState('');
     const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
     const [radius, setRadius] = useState(2);
+    const [error, setError] = useState('');
+
     async function geoPostalCode(postal: string) {
+        setError('');
         const res = await fetch(`https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${postal}&returnGeom=Y&getAddrDetails=Y`);
         const data = await res.json();
         const result = data.results?.[0];
         if (result) {
             setUserLocation([parseFloat(result.LATITUDE), parseFloat(result.LONGITUDE)]);
+        } else {
+            setError('Invalid postal code. Please enter a valid postal code.')
         }
     }
     function getDistanceKm(lat1: number, long1: number, lat2: number, long2: number) {
@@ -96,6 +101,7 @@ export default function RoasterMap() {
                     <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
                 </div>
             </div>
+            {error && <p style={{ color: '#c0329b', fontSize: '13px', marginTop: '6px' }}>{error}</p>}
             {userLocation && (
                 <div className='radius_selector' style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
                     <input type="range" min={1} max={50} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: '200px', cursor: 'pointer', background: '#fff' }} />
