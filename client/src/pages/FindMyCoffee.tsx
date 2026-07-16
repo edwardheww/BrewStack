@@ -97,7 +97,7 @@ function scoreBean(bean: Bean, answers: AnswerMap) { // Scores one bean against 
 
     const flavourAnswer = answers.flavour;
     const flavourWords = flavourAnswer ? flavourGroups[flavourAnswer] : undefined;
-    if (flavourAnswer&&flavourWords && hasText(bean, flavourWords)) {
+    if (flavourAnswer && flavourWords && hasText(bean, flavourWords)) {
         score += 4;
         reasons.push(`Matches your preference for ${flavourAnswer.toLowerCase()} flavours`);
     }
@@ -156,12 +156,12 @@ function scoreBean(bean: Bean, answers: AnswerMap) { // Scores one bean against 
 
 function recommendBean(beans: Bean[], answers: AnswerMap) { //score all beans, rank them form, best to worst
     const scored = beans
-    .map(bean => ({ bean, ...scoreBean(bean, answers) }))
-    .filter(item => item.score >= 0)
-    .sort((a, b) => b.score - a.score);
+        .map(bean => ({ bean, ...scoreBean(bean, answers) }))
+        .filter(item => item.score >= 0)
+        .sort((a, b) => b.score - a.score);
 
     if (answers.occasion === 'Surprise me') {
-        return scored.slice(0,8).sort(() => Math.random() - 0.5).slice(0,3);
+        return scored.slice(0, 8).sort(() => Math.random() - 0.5).slice(0, 3);
     }
 
     return scored.slice(0, 3); // return top three ranked matches
@@ -221,7 +221,7 @@ export default function FindMyCoffee() { //page components
         }, 1000);
     }
 
-    function restart(){ // restart quiz
+    function restart() { // restart quiz
         setStep(0);
         setAnswers({});
         setShowResult(false);
@@ -258,7 +258,7 @@ export default function FindMyCoffee() { //page components
                     <h1>Find My Bean</h1>
                     <p>Answer a few questions and we'll match you with a coffee from local roasters.</p>
                 </div>
-                
+
                 {loading || finding ? (
                     <section className="finding-state">
                         <div className="spinner" />
@@ -358,7 +358,7 @@ export default function FindMyCoffee() { //page components
                                     <button className="secondary-action" onClick={restart}>↻ Try Again</button>
                                 </div>
                             </>
-                        ):(
+                        ) : (
                             <div className="empty-match">
                                 <h2>No match found yet.</h2>
                                 <p>Try again after the catalog has been updated.</p>
@@ -383,11 +383,11 @@ export default function FindMyCoffee() { //page components
                                     {currentQuestion.options.map(option => (
                                         <button
                                             key={option}
-                                            className={selectedAnswer === option ? 'option-button selected': 'option-button'}
+                                            className={selectedAnswer === option ? 'option-button selected' : 'option-button'}
                                             onClick={() => chooseOption(option)}
                                         >
                                             {option}
-                                            {selectedAnswer === option && <span>›</span>}
+                                            {selectedAnswer === option}
                                         </button>
                                     ))}
                                 </div>
@@ -407,19 +407,18 @@ export default function FindMyCoffee() { //page components
                         <p className="find-footnote">Recommendations are from Singapore-based roasters only.</p>
                     </>
                 )}
-                </main>
+            </main>
         </div>
-    );      
+    );
 }
 
-                                
-                                
-                                
-
-                            
 
 
-                            
 
-                        
-                    
+
+
+
+
+
+
+
