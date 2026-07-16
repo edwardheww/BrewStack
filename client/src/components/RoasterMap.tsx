@@ -105,9 +105,9 @@ export default function RoasterMap() {
                     <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
                 </div>
             </div>
-            {error && <p style={{ color: '#c0329b', fontSize: '13px', marginTop: '6px' }}>{error}</p>}
+            {error && <p style={{ color: '#c0329b', fontSize: '13px', marginTop: '6px', marginBottom: '2px' }}>{error}</p>}
             {userLocation && (
-                <div className='radius_selector' style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+                <div className='radius_selector' style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', marginBottom: '2px' }}>
                     <input type="range" min={1} max={50} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: '200px', cursor: 'pointer', background: '#fff' }} />
                     <input type="number" min={1} max={50} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: '60px', border: '1px solid #e3ded6', borderRadius: '6px', background: '#fff', padding: '4px 8px', fontSize: '14px' }} />
                     <span style={{ fontSize: '13px', color: '#6f6962' }}>km</span>
