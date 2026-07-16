@@ -100,7 +100,7 @@ export default function RoasterMap() {
     return (
         <div className='roaster_page'>
             <div className='area_search'>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e3ded6', borderRadius: '12px', background: '#fff', padding: '0 12px', marginBottom: '12px', gap: '8px', width: 'fit-content' }}>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e3ded6', borderRadius: '12px', background: '#fff', padding: '0 12px', marginBottom: '8px', gap: '8px', width: 'fit-content' }}>
                     <input type='number' value={postalCode} onChange={e => setPostalCode(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') geoPostalCode(postalCode); }} placeholder="Enter postal code" style={{ border: 'none', outline: 'none', fontSize: '14px', padding: '10px 0', background: 'transparent', width: '160px' }} />
                     <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
                 </div>
@@ -114,7 +114,7 @@ export default function RoasterMap() {
                 </div>
             )}
             <div className='map_component'>
-                <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px', marginTop: '3px' }}>
+                <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px', marginTop: '6px' }}>
                     <MapCenter location={userLocation} />
                     <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
                     {
