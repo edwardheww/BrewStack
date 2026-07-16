@@ -14,9 +14,9 @@ export default function Home() {
     const [beans, setBeans] = useState<Bean[]>([]);
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/beans`)
-        .then(response => response.json())
-        .then(data => setBeans(data))
-        .catch(error => console.error('Error fetching beans:', error));
+            .then(response => response.json())
+            .then(data => setBeans(data))
+            .catch(error => console.error('Error fetching beans:', error));
     }, []);
     const freshDrops = useMemo(() => beans.slice(0, 3), [beans]);
     return (
@@ -56,23 +56,20 @@ export default function Home() {
                 <section className="home-features">
                     <article>
                         <div className="feature-icon green">🗹</div>
-                        <h2>Take the bean quiz</h2>
+                        <h2><a href="/find-my-coffee">Take the bean quiz</a></h2>
                         <p>Answer a few quick questions on flavour, brew method, and cup profile, then get matched to your taste.</p>
-                        <span>Core Feature</span>
                     </article>
 
                     <article>
                         <div className="feature-icon red">🗺️</div>
-                         <h2>Explore the map</h2>
-                          <p>See every specialty roaster near you, including the small, lesser-marketed ones that are easy to miss.</p>
-                          <span>Core Feature</span>
+                        <h2><a href="/roasters">Explore the map</a></h2>
+                        <p>See every specialty roaster near you, including the small, lesser-marketed ones that are easy to miss.</p>
                     </article>
 
                     <article>
                         <div className="feature-icon brown">☕</div>
-                        <h2>Browse fresh drops</h2>
+                        <h2><a href="/catalog">Browse fresh drops</a></h2>
                         <p>Rotating bean offerings from seasonal sourcing and limited releases, tracked and updated as they happen.</p>
-                        <span>Core Feature</span>
                     </article>
                 </section>
 
@@ -85,23 +82,23 @@ export default function Home() {
 
                     <div className="home-drop-grid">
                         {freshDrops.map(bean => (  //clicking on the freshdrops goes to the bean's actual website
-                            <a 
+                            <a
                                 className="home-drop-card"
                                 key={bean.id}
                                 href={bean.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                >
-                                    <div className="home-drop-image">
-                                        {bean.imageUrl ? (
-                                            <img src={bean.imageUrl} alt={bean.name} />
-                                        ) : (
-                                            <span>Coffee Image</span>
-                                        )}
-                                    </div>
-                                    <h3>{bean.name}</h3>
-                                    <p>{bean.roaster?.name || 'N/A'} — {money(bean.price)}</p>
-                                </a>
+                            >
+                                <div className="home-drop-image">
+                                    {bean.imageUrl ? (
+                                        <img src={bean.imageUrl} alt={bean.name} />
+                                    ) : (
+                                        <span>Coffee Image</span>
+                                    )}
+                                </div>
+                                <h3>{bean.name}</h3>
+                                <p>{bean.roaster?.name || 'N/A'} — {money(bean.price)}</p>
+                            </a>
                         ))}
                     </div>
                 </section>
@@ -126,7 +123,7 @@ export default function Home() {
                         <article>
                             <span>3</span>
                             <h2>Save and shop</h2>
-                            <p>Bookmark beans to your list, then head straight to the roaster to buy.</p>                           
+                            <p>Bookmark beans to your list, then head straight to the roaster to buy.</p>
                         </article>
                     </div>
                 </section>
@@ -134,8 +131,8 @@ export default function Home() {
 
                 <section className="home-cta">
                     <h2>Stop guessing. Start discovering.</h2>
-                     <p>One place for Singapore's specialty coffee — beans, roasters, and everything in between.</p>
-                     <Link className="home-primary" to="/find-my-coffee">Find my coffee</Link>
+                    <p>One place for Singapore's specialty coffee — beans, roasters, and everything in between.</p>
+                    <Link className="home-primary" to="/find-my-coffee">Find my coffee</Link>
                 </section>
 
 
@@ -158,17 +155,17 @@ export default function Home() {
 
                         <article>
                             <div className="why-icon green">👥</div>
-                             <h3>Same names, every time</h3>
-                             <p>Without strong marketing budgets, smaller and newer roasters get buried under well-known brands — even when the coffee itself is just as good, or better.</p>
+                            <h3>Same names, every time</h3>
+                            <p>Without strong marketing budgets, smaller and newer roasters get buried under well-known brands — even when the coffee itself is just as good, or better.</p>
                         </article>
                     </div>
 
                     <p className="why-close">
-                        We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene — helping newcomers learn what they actually like, and giving every local roaster, big or small, an equal shot at being discovered.  
+                        We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene — helping newcomers learn what they actually like, and giving every local roaster, big or small, an equal shot at being discovered.
                     </p>
                 </section>
             </main>
         </div>
-     
+
     );
 }

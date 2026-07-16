@@ -29,7 +29,7 @@ function FilterBar({ filters, setFilters,
     return (
         <div className="filter-bar">
             <select className="filter-button" value={filters.roaster} onChange={e => setFilters({ ...filters, roaster: e.target.value })}>
-                <option value="">Roaster</option>
+                <option value="">--Roaster--</option>
                 <option value="Tiong Hoe">Tiong Hoe</option>
                 <option value="HomeGround">HomeGround</option>
                 <option value="Nylon">Nylon</option>
@@ -38,14 +38,14 @@ function FilterBar({ filters, setFilters,
                 <option value="Kyuukei Coffee">Kyuukei Coffee</option>
             </select>
             <select className="filter-button" value={filters.origin} onChange={e => setFilters({ ...filters, origin: e.target.value })}>
-                <option value="">Origin</option>
+                <option value="">--Origin--</option>
                 <option value="Colombia">Colombia</option>
                 <option value="Ethiopia">Ethiopia</option>
                 <option value="Peru">Peru</option>
                 <option value="Brazil">Brazil</option>
             </select>
             <select className="filter-button" value={filters.roastLevel} onChange={e => setFilters({ ...filters, roastLevel: e.target.value })}>
-                <option value="">Roast Level</option>
+                <option value="">--Roast Level--</option>
                 <option value="Filter">Filter</option>
                 <option value="Espresso">Espresso</option>
                 <option value="Light">Light</option>
@@ -53,7 +53,7 @@ function FilterBar({ filters, setFilters,
                 <option value="Dark">Dark</option>
             </select>
             <select className="filter-button" value={filters.process} onChange={e => setFilters({ ...filters, process: e.target.value })}>
-                <option value="">Process</option>
+                <option value="">--Process--</option>
                 <option value="Washed">Washed</option>
                 <option value="Natural">Natural</option>
                 <option value="Honey">Honey</option>
@@ -89,13 +89,13 @@ function BeanCard({ bean }: { bean: Bean; }) {
     }
 
     return (
-        <a 
+        <a
             className="bean-card-link" // clicking on each product opens the actual roaster's product page in a new tab
             href={bean.url}
             target="_blank"
             rel="noreferrer"
-            >
-        
+        >
+
             <article className="bean-card">
                 <div className="bean-image">
                     {bean.imageUrl ? (
@@ -140,7 +140,7 @@ function BeanCard({ bean }: { bean: Bean; }) {
 
                         </div>
                     </div>
-                    
+
                     <button className="save-bean-button" onClick={saveBean}>Save Bean</button>
                     <p className="updated">Updated recently</p>
                 </div>
