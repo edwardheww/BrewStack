@@ -56,19 +56,19 @@ export default function Home() {
                 <section className="home-features">
                     <article>
                         <div className="feature-icon green">🗹</div>
-                        <h2><a href="/find-my-coffee">Take the bean quiz</a></h2>
+                        <h2><a href="/find-my-coffee" style={{ textDecoration: 'underline', color: 'inherit' }}>Take the bean quiz</a></h2>
                         <p>Answer a few quick questions on flavour, brew method, and cup profile, then get matched to your taste.</p>
                     </article>
 
                     <article>
                         <div className="feature-icon red">🗺️</div>
-                        <h2><a href="/roasters">Explore the map</a></h2>
+                        <h2><a href="/roasters" style={{ textDecoration: 'underline', color: 'inherit' }}>Explore the map</a></h2>
                         <p>See every specialty roaster near you, including the small, lesser-marketed ones that are easy to miss.</p>
                     </article>
 
                     <article>
                         <div className="feature-icon brown">☕</div>
-                        <h2><a href="/catalog">Browse fresh drops</a></h2>
+                        <h2><a href="/catalog" style={{ textDecoration: 'underline', color: 'inherit' }}>Browse fresh drops</a></h2>
                         <p>Rotating bean offerings from seasonal sourcing and limited releases, tracked and updated as they happen.</p>
                     </article>
                 </section>
