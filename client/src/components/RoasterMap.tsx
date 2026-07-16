@@ -72,6 +72,10 @@ export default function RoasterMap() {
 
     async function geoPostalCode(postal: string) {
         setError('');
+        if (!/^\d{6}/.test(postal)) {
+            setError('Please enter a valid 6-digit postal code.');
+            return;
+        }
         const res = await fetch(`https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${postal}&returnGeom=Y&getAddrDetails=Y`);
         const data = await res.json();
         const result = data.results?.[0];
