@@ -13,6 +13,12 @@ function money(price?: number) {
     return `$${price}`;
 }
 
+function updatedDate(updatedAt?: Date | string) {
+    if (!updatedAt) return 'Updated date unavailable';
+
+    return `Updated on ${new Date(updatedAt).toISOString().slice(0, 10)}`;
+}
+
 export default function SavedBeans() {  // Fetch saved beans from the backend for the logged-in user
     const [beans, setBeans] = useState<Bean[]>([]);
     const [message, setMessage] = useState('Loading saved beans...');
@@ -127,6 +133,8 @@ export default function SavedBeans() {  // Fetch saved beans from the backend fo
                                                     )) : <span className="note-pill">N/A</span>}
                                             </div>
                                         </div>
+
+                                        <p className="updated">{updatedDate(bean.updatedAt)}</p>
 
                                         <div className="saved-actions">
                                             <a href={bean.url} target="_blank" rel="noreferrer">View Coffee</a>

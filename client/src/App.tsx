@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Roasters from "./pages/Roasters";
 import Login from "./pages/Login";
 import SavedBeans from "./pages/SavedBeans";
+import Signup from "./pages/Signup";
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                 <Route path="/roasters" element={<Roasters />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/saved-beans" element={<SavedBeans />} />
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </BrowserRouter>
     );

@@ -131,7 +131,7 @@ export default function Home() {
 
                 <section className="home-cta">
                     <h2>Stop guessing. Start discovering.</h2>
-                    <p>One place for Singapore's specialty coffee — beans, roasters, and everything in between.</p>
+                    <p>One place for Singapore's specialty coffee, beans, roasters, and everything in between.</p>
                     <Link className="home-primary" to="/find-my-coffee">Find my coffee</Link>
                 </section>
 
@@ -156,12 +156,12 @@ export default function Home() {
                         <article>
                             <div className="why-icon green">👥</div>
                             <h3>Same names, every time</h3>
-                            <p>Without strong marketing budgets, smaller and newer roasters get buried under well-known brands — even when the coffee itself is just as good, or better.</p>
+                            <p>Without strong marketing budgets, smaller and newer roasters get buried under well-known brands, even when the coffee itself is just as good, or better.</p>
                         </article>
                     </div>
 
                     <p className="why-close">
-                        We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene — helping newcomers learn what they actually like, and giving every local roaster, big or small, an equal shot at being discovered.
+                        We built BrewStack to fix this: <strong>one continuously updated, centralised source of truth</strong> for Singapore's specialty coffee scene, helping newcomers learn what they actually like, and giving every local roaster, big or small, an equal shot at being discovered.
                     </p>
                 </section>
             </main>

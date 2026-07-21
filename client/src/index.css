@@ -1295,6 +1295,13 @@ body {
   margin-left: 18px;
 }
 
+.auth-switch a {
+  color: #190803;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .save-bean-button {
   margin-top: 14px;
   min-height: 34px;
@@ -1304,6 +1311,17 @@ body {
   padding: 0 12px;
   font-size: 13px;
   cursor: pointer;
+}
+
+.save-feedback-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.save-feedback {
+  color: #7a665d;
+  font-size: 12px;
 }
 
 .saved-shell {

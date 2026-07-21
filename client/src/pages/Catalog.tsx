@@ -13,6 +13,12 @@ function money(price?: number) {
     return `$${price}`;
 }
 
+function updatedDate(updatedAt?: Date | string) {
+    if (!updatedAt) return 'Updated date unavailable';
+
+    return `Updated on ${new Date(updatedAt).toISOString().slice(0, 10)}`;
+}
+
 type Filters = {
     roaster: string;
     origin: string;
@@ -67,6 +73,7 @@ function FilterBar({ filters, setFilters,
 function BeanCard({ bean }: { bean: Bean; }) {
     const notes = splitNotes(bean.flavourNotes);
     const origin = bean.region?.trim() || 'N/A';
+    const [savedMessage, setSavedMessage] = useState('');
 
     async function saveBean(event: React.MouseEvent) {  // Save the current bean for the logged-in user
         event.preventDefault();
@@ -78,14 +85,22 @@ function BeanCard({ bean }: { bean: Bean; }) {
             return;
         }
 
-        await fetch(`${import.meta.env.VITE_API_URL}/me/saved-beans`, { // Ask the backend to create a saved-bean record for this user and bean
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/me/saved-beans`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ beanId: bean.id }),
         });
+
+        if (response.ok) {
+            setSavedMessage('Saved!');
+            setTimeout(() => setSavedMessage(''), 2000);
+        }
+        else {
+            setSavedMessage('Could not save.');
+        }
     }
 
     return (
@@ -141,8 +156,11 @@ function BeanCard({ bean }: { bean: Bean; }) {
                         </div>
                     </div>
 
-                    <button className="save-bean-button" onClick={saveBean}>Save Bean</button>
-                    <p className="updated">Updated recently</p>
+                    <div className="save-feedback-row">
+                        <button className="save-bean-button" onClick={saveBean}>Save Bean</button>
+                        {savedMessage && <span className="save-feedback">{savedMessage}</span>}
+                    </div>
+                    <p className="updated">{updatedDate(bean.updatedAt)}</p>
                 </div>
             </article>
         </a>

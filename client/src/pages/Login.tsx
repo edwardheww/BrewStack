@@ -1,24 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar.js';
 import { supabase } from '../lib/supabase.js';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Login() { // // Login page for both existing users and new users.
+export default function Login() { // // Login page for both existing users 
     const navigate = useNavigate();
     const [email, setEmail] = useState(''); // store what the user types into email, password input
     const [password, setPassword] = useState(''); 
     const [message, setMessage] = useState('');
 
-    async function signUp() { // creates new acc
-        const {error} = await supabase.auth.signUp({ email, password });
-
-        if (error) {
-            setMessage(error.message);
-            return;
-        }
-
-        setMessage('Account created. Check your email if confirmation is enabled.');
-    }
         async function logIn() { //login to existing acc
             const {error} = await supabase.auth.signInWithPassword({ email, password });
 
@@ -54,8 +44,12 @@ export default function Login() { // // Login page for both existing users and n
 
                         <div className="login-actions">
                             <button onClick={logIn}>Log In</button>
-                            <button className="secondary-action" onClick={signUp}>Create Account</button>
+                            
                         </div>
+
+                        <p className="auth-switch">
+                            New to BrewStack? <Link to="/signup">Create an account</Link>
+                        </p>
 
                         {message && <p className="login-message">{message}</p>}
                     </section>
