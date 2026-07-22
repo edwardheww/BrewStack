@@ -215,6 +215,7 @@ function Sidebar({ beans }: { beans: Bean[] }) {
 
 export default function Catalog() {
     const [beans, setBeans] = useState<Bean[]>([]);
+    const [searchQuery, setSearchQuery] = useState(''); // store what user types in the search bar
 
     const [filters, setFilters] = useState<Filters>({
         roaster: '',
@@ -223,13 +224,45 @@ export default function Catalog() {
         process: '',
     });
 
-    // Initial fetch upon page loading.
-    useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/beans`)
+    function buildBeansUrl() {
+        const params = new URLSearchParams();
+
+        if (searchQuery.trim()) { // add query only if user typed something
+            params.set('search', searchQuery.trim());
+        }
+
+        if (filters.roaster) {
+            params.set('roaster', filters.roaster);
+        }
+
+        if (filters.origin) {
+            params.set('origin', filters.origin);
+        }
+
+        if (filters.roastLevel) {
+            params.set('roastLevel', filters.roastLevel);
+        }
+
+        if (filters.process) {
+            params.set('process', filters.process);
+        }
+
+        const queryString = params.toString();
+        return `${import.meta.env.VITE_API_URL}/beans${queryString ? `?${queryString}` : ''}`;
+    }
+    
+
+    function fetchBeans() { // Fetch beans based on current search and filter criteria
+        fetch(buildBeansUrl())
             .then(response => response.json())
             .then(data => setBeans(data))
             .catch(error => console.error('Error fetching beans:', error));
-    }, []);
+    }
+
+    // filtering now happening through backend, so we can just fetch beans whenever searchQuery or filters change
+    useEffect(() => {
+        fetchBeans();
+    }, [searchQuery, filters]);
 
     // Subsequent fetches should db update mid-browsing.
     useEffect(() => {
@@ -239,19 +272,11 @@ export default function Catalog() {
         eventSource.onerror = (e) => console.log('SSE error:', e);
         eventSource.onmessage = () => {
             fetch(`${import.meta.env.VITE_API_URL}/beans`)
-                .then(res => res.json())
-                .then(data => setBeans(data))
+                fetchBeans();
         };
         return () => eventSource.close();
     }, []);
 
-    const filteredBeans = beans.filter(bean => {
-        return (
-            (!filters.roaster || bean.roaster?.name === filters.roaster) && (!filters.origin || bean.region?.toLowerCase().includes(filters.origin.toLowerCase())) &&
-            (!filters.roastLevel || bean.roastLevel?.toLowerCase() === filters.roastLevel.toLowerCase())
-            && (!filters.process || bean.processingMethod?.toLowerCase().includes(filters.process.toLowerCase()))
-        );
-    });
 
     return (
         <div className="catalog_page">
@@ -264,13 +289,35 @@ export default function Catalog() {
                         <p>Track fresh drops, tasting notes, origins, and roasters in one place.</p>
                     </div>
 
+                    <div className="catalog-search">
+                        <input 
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Search by bean name, roaster, or origin..."
+                            type = "search"
+                        />
+
+                        {searchQuery && (
+                            <button type="button" onClick={() => setSearchQuery('')}>
+                                Clear
+                            </button>
+                        )}
+                    </div>
+
                     <FilterBar filters={filters} setFilters={setFilters} />
 
-                    <div className="bean-grid">
-                        {filteredBeans.map(bean => (
-                            <BeanCard key={bean.id} bean={bean} />
-                        ))}
-                    </div>
+                    {beans.length > 0 ? (
+                        <div className="bean-grid">
+                            {beans.map(bean => (
+                                <BeanCard key={bean.id} bean={bean} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="empty-catalog">
+                            <h2>No Beans Found</h2>
+                            <p>Try adjusting your search or filter criteria.</p>
+                        </div>
+                    )}
                 </section>
 
                 <Sidebar beans={beans} />

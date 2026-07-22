@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../db/client.js";
+import type { Prisma } from "@prisma/client";
 import { HomegroundScraper } from "../scraper/scrapers/HomegroundScraper.js";
 import { Roaster } from "../scraper/types/index.js";
 import { type Response } from "express";
@@ -17,20 +18,72 @@ routes.get("/health", (_req, res) => {
 });
 
 // Return all coffee beans and their roaster details from the database.
-routes.get("/beans", async (_req, res) => {
+// Optional query params let the frontend ask the backend for filtered results.
+routes.get("/beans", async (req, res) => {
     try {
+        const { search, roaster, origin, roastLevel, process } = req.query; // Read optional filters from the URL
+        const where: Prisma.BeanWhereInput = {};
+        
+        if (roaster) {
+            where.roaster = {
+                name: String(roaster),
+                
+            }
+        }
+
+        if (origin) {
+            where.region = {
+                contains: String(origin),
+                mode: "insensitive",
+            };
+        }
+
+        if (roastLevel) {
+            where.roastLevel = {
+                contains: String(roastLevel),
+                mode: "insensitive",
+            };
+        }
+
+        if (process) {
+            where.processingMethod = {
+                contains: String(process),
+                mode: "insensitive",
+            };
+        }
+            
+        if (search) {
+            const query = String(search);
+
+            where.OR = [ // return bean if any of the fields matches
+                { name: { contains: query, mode: "insensitive" } },
+                { region: { contains: query, mode: "insensitive" } },
+                { roastLevel: { contains: query, mode: "insensitive" } },
+                { varietal: { contains: query, mode: "insensitive" } },
+                { flavourNotes: { contains: query, mode: "insensitive" } },
+                { processingMethod: { contains: query, mode: "insensitive" } },
+                {
+                    roaster: {
+                        name: { contains: query, mode: "insensitive" },
+                    },
+                }
+            ];
+        }
+
         const beans = await prisma.bean.findMany({
+            where,
             include: {
                 roaster: true,
             },
         });
-
         res.json(beans);
     } catch (error) {
         console.error("Error fetching beans:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+            
+        
 
 // Return all roasters and the beans linked to each roaster
 routes.get("/roasters", async (_req, res) => {
