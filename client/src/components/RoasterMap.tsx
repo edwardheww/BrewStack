@@ -38,6 +38,10 @@ const ROASTERS = [
     { name: 'The Community Coffee', branch: 'Hamilton', lat: 1.3116, long: 103.8614, address: '38 Hamilton Rd' },
     { name: 'The Community Coffee', branch: 'Far East Plaza', lat: 1.3073, long: 103.8337, address: '14 Scotts Rd #02-94' },
     { name: 'The Community Coffee', branch: 'Odeon', lat: 1.2959, long: 103.8535, address: '333 N Bridge Rd #01-12' },
+
+    // KYUUKEI
+    { name: 'Kyuukei Coffee', branch: 'Gillman Outpost', lat: 1.2571, long: 103.8045, address: '47 Malan Rd #01-23' },
+    { name: 'Kyuukei Coffee', branch: 'Alexandra', lat: 1.2867, long: 103.8049, address: '121 Bukit Merah Lane 1, #01-06' },
 ]
 
 // Colour-coding of roasters according to respective brand colours
@@ -46,7 +50,8 @@ const ROASTER_COLOURS: Record<string, string> = {
     'Nylon Coffee': '#6ad1be',
     'Tiong Hoe Specialty Coffee': '#43643b',
     'Alchemist Coffee': '#07446e',
-    'The Community Coffee': '#e43c90'
+    'The Community Coffee': '#e43c90',
+    'Kyuukei Coffee': '#fff5e4'
 };
 
 // Helper function to center map around user location once entered
