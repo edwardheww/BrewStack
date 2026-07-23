@@ -22,7 +22,7 @@ export interface Bean {
     roasterId: string,
     roaster: Roaster,
 }
-
+export type SavedBeanStatus = 'want_to_try' | 'tried' | 'loved' | 'not_for_me';
 export interface SavedBean {
     id: string;
     beanId?: string | null;
@@ -38,7 +38,7 @@ export interface SavedBean {
     processingMethod?: string;
     createdAt: string;
 
-    status?: string;
+    status?: SavedBeanStatus;
     notes?: string;
     rating?: number;
 
