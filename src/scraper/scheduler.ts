@@ -19,7 +19,7 @@ const scrapers = [
 ]
 
 async function runAllScrapers() {
-    await clearDb();
+    clearDb();
 
     for (const scraper of scrapers) {
         try {

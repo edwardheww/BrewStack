@@ -2,8 +2,8 @@ import { prisma } from "./client.js";
 
 import { type ScrapedBean } from "../scraper/types/index.js";
 
-export async function clearDb() {
-    await prisma.bean.deleteMany({});
+export function clearDb() {
+    prisma.bean.deleteMany({});
 }
 
 export async function upsertScrapedBeans(scrapedBeans: ScrapedBean[]) {
