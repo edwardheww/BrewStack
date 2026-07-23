@@ -13,11 +13,7 @@ function money(price?: number) {
     return `$${price}`;
 }
 
-function updatedDate(updatedAt?: Date | string) {
-    if (!updatedAt) return 'Updated date unavailable';
 
-    return `Updated on ${new Date(updatedAt).toISOString().slice(0, 10)}`;
-}
 
 function BeanImage({ src, alt }: { src?: string; alt: string }) {
     const [failed, setFailed] = useState(false);
