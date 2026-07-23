@@ -134,13 +134,7 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
             where: {
                 userId: user.id,
             },
-            include: {
-                bean: {
-                    include: {
-                        roaster: true,
-                    },
-                },
-            },
+           // Saved beans use snapshot fields so they still work if the live bean is removed
             orderBy: {
                 createdAt: "desc",
             },
@@ -149,7 +143,7 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
             id: saved.id,
             beanId: saved.beanId,
 
-            name: saved.beanName,
+            name: saved.beanName || "Saved coffee",
             price: saved.price,
             url: saved.url,
             imageUrl: saved.imageUrl,
@@ -165,7 +159,7 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
             rating: saved.rating,
 
             roaster: {
-                name: saved.roasterName,
+                name: saved.roasterName || "Unknown roaster",
             },
 
             isUnavailable: saved.beanId === null,
@@ -241,6 +235,66 @@ routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the cu
         res.json(savedBean);
     } catch(error) {
         console.error("Error saving bean:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+routes.patch("/me/saved-beans/:savedBeanId", async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+
+        if (!user) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const { savedBeanId } = req.params;
+        const { status, notes, rating } = req.body;
+
+        const updateData: Prisma.SavedBeanUpdateInput = {};
+
+        // Only write fields that the frontend actually sent
+        if (status !== undefined) {
+            updateData.status = String(status);
+        }
+
+        if (notes !== undefined) {
+            updateData.notes = String(notes);
+        }
+
+        if (rating !== undefined) {
+            const numericRating = Number(rating);
+
+            if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+                res.status(400).json({ error: "Rating must be between 1 and 5" });
+                return;
+            }
+
+            updateData.rating = numericRating;
+        }
+
+        const existingSavedBean = await prisma.savedBean.findFirst({
+            where: {
+                id: savedBeanId,
+                userId: user.id,
+            },
+        });
+
+        if (!existingSavedBean) {
+            res.status(404).json({ error: "Saved bean not found" });
+            return;
+        }
+
+        const savedBean = await prisma.savedBean.update({
+            where: {
+                id: savedBeanId,
+            },
+            data: updateData,
+        });
+
+        res.json(savedBean);
+    } catch (error) {
+        console.error("Error updating saved bean:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
