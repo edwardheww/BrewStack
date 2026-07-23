@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar.js';
 import { supabase } from '../lib/supabase.js';
-import { type Bean } from '../types/index.js';
+import { type SavedBean } from '../types/index.js';
 
 function splitNotes(notes?: string) {
     if (!notes) return [];
@@ -19,8 +19,25 @@ function updatedDate(updatedAt?: Date | string) {
     return `Updated on ${new Date(updatedAt).toISOString().slice(0, 10)}`;
 }
 
+function BeanImage({ src, alt }: { src?: string; alt: string }) {
+    const [failed, setFailed] = useState(false);
+
+    // handles both missing image URLs and broken roaster image links.
+    if (!src || failed) {
+        return <span>Image unavailable</span>;
+    }
+
+    return (
+        <img
+            src={src}
+            alt={alt}
+            onError={() => setFailed(true)}
+        />
+    );
+}
+
 export default function SavedBeans() {  // Fetch saved beans from the backend for the logged-in user
-    const [beans, setBeans] = useState<Bean[]>([]);
+    const [beans, setBeans] = useState<SavedBean[]>([]);
     const [message, setMessage] = useState('Loading saved beans...');
 
     async function loadSavedBeans() { // Fetch saved beans from the backend for the logged-in user
@@ -92,11 +109,7 @@ export default function SavedBeans() {  // Fetch saved beans from the backend fo
                             return(
                                 <article className="bean-card" key={bean.id}>
                                     <div className="bean-image">
-                                        {bean.imageUrl ? (
-                                            <img src={bean.imageUrl} alt={bean.name} />
-                                        ) : (
-                                            <span>Coffee Image</span>
-                                        )}
+                                        <BeanImage src={bean.imageUrl} alt={bean.name} />
                                     </div>
 
                                     <div className="bean-body">
@@ -104,6 +117,10 @@ export default function SavedBeans() {  // Fetch saved beans from the backend fo
                                             <div>
                                                 <h2>{bean.name}</h2>
                                                 <p className="roaster">{bean.roaster?.name || 'N/A'}</p>
+
+                                                {bean.isUnavailable && (
+                                                    <p className="saved-unavailable">No longer available from roaster</p>
+                                                )}
                                             </div>
                                             <strong className="price">{money(bean.price)}</strong>
                                         </div>
@@ -134,7 +151,7 @@ export default function SavedBeans() {  // Fetch saved beans from the backend fo
                                             </div>
                                         </div>
 
-                                        <p className="updated">{updatedDate(bean.updatedAt)}</p>
+                                        <p className="updated">Saved on {new Date(bean.createdAt).toISOString().slice(0, 10)}</p>
 
                                         <div className="saved-actions">
                                             <a href={bean.url} target="_blank" rel="noreferrer">View Coffee</a>

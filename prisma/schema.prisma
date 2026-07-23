@@ -47,11 +47,26 @@ model User {
 model SavedBean {
   id        String   @id @default(cuid())
   userId    String
-  beanId    String
+  beanId    String?
   createdAt DateTime @default(now())
 
+  status    String   @default("want_to_try")
+  notes     String?
+  rating    Int?
+
+  beanName          String
+  roasterName       String
+  price             Float?
+  url               String?
+  imageUrl          String?
+  region            String?
+  roastLevel        String?
+  varietal          String?
+  flavourNotes      String?
+  processingMethod  String?
+
   user User @relation(fields: [userId], references: [id])
-  bean Bean @relation(fields: [beanId], references: [id])
+  bean Bean? @relation(fields: [beanId], references: [id], onDelete: SetNull)
 
   @@unique([userId, beanId])
 }

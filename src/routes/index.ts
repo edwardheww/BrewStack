@@ -145,7 +145,31 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
                 createdAt: "desc",
             },
         });
-        res.json(savedBeans.map(saved => saved.bean));
+        res.json(savedBeans.map(saved => ({
+            id: saved.id,
+            beanId: saved.beanId,
+
+            name: saved.beanName,
+            price: saved.price,
+            url: saved.url,
+            imageUrl: saved.imageUrl,
+            region: saved.region,
+            roastLevel: saved.roastLevel,
+            varietal: saved.varietal,
+            flavourNotes: saved.flavourNotes,
+            processingMethod: saved.processingMethod,
+            createdAt: saved.createdAt,
+
+            status: saved.status,
+            notes: saved.notes,
+            rating: saved.rating,
+
+            roaster: {
+                name: saved.roasterName,
+            },
+
+            isUnavailable: saved.beanId === null,
+        })));
     } catch(error) {
         console.error("Error fetching saved beans:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -163,8 +187,17 @@ routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the cu
 
         const { beanId } = req.body;
 
-        if (!beanId) {
-            res.status(400).json({ error: "Missing beanId" });
+        const bean = await prisma.bean.findUnique({
+            where: {
+                id: beanId,
+            },
+            include: {
+                roaster: true,
+            },
+        });
+
+        if (!bean) {
+            res.status(400).json({ error: "Bean not found" });
             return;
         }
 
@@ -191,7 +224,18 @@ routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the cu
             update: {},
             create: {
                 userId: user.id,
-                beanId,
+                beanId: bean.id,
+
+                beanName: bean.name,
+                roasterName: bean.roaster.name,
+                price: bean.price,
+                url: bean.url,
+                imageUrl: bean.imageUrl,
+                region: bean.region,
+                roastLevel: bean.roastLevel,
+                varietal: bean.varietal,
+                flavourNotes: bean.flavourNotes,
+                processingMethod: bean.processingMethod,
             },
         });
         res.json(savedBean);
@@ -201,7 +245,7 @@ routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the cu
     }
 });
 
-routes.delete("/me/saved-beans/:beanId", async (req, res) => { // Remove one saved bean for the current user.
+routes.delete("/me/saved-beans/:savedBeanId", async (req, res) => { // Remove one saved bean for the current user.
     try {
         const user = await getUserFromRequest(req);
 
@@ -210,11 +254,11 @@ routes.delete("/me/saved-beans/:beanId", async (req, res) => { // Remove one sav
             return;
         }
 
-        const { beanId } = req.params;
+        const { savedBeanId } = req.params;
         await prisma.savedBean.deleteMany({
             where: {
                 userId: user.id,
-                beanId,
+                id: savedBeanId,
             },
         });
 

@@ -38,7 +38,7 @@ export default function NavBar() {
             ) : (
                 <Link className="nav-auth-link" to="/login">Login</Link>
             )}
-            <button className="search-button" aria-label="Search">⌕</button>
+            
         </header>
     );
 }

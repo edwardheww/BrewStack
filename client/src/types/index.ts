@@ -22,3 +22,29 @@ export interface Bean {
     roasterId: string,
     roaster: Roaster,
 }
+
+export interface SavedBean {
+    id: string;
+    beanId?: string | null;
+
+    name: string;
+    price?: number;
+    url?: string;
+    imageUrl?: string;
+    region?: string;
+    roastLevel?: string;
+    varietal?: string;
+    flavourNotes?: string;
+    processingMethod?: string;
+    createdAt: string;
+
+    status?: string;
+    notes?: string;
+    rating?: number;
+
+    roaster: {
+        name: string;
+    };
+
+    isUnavailable?: boolean;
+}
