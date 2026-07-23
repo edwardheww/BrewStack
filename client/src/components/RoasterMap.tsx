@@ -106,16 +106,16 @@ export default function RoasterMap() {
     return (
         <div className='roaster_page'>
             <div className='area_search'>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e3ded6', borderRadius: '12px', background: '#fff', padding: '0 12px', marginBottom: '8px', gap: '8px', width: 'fit-content' }}>
+                <div className='postal_code_input' style={{ display: 'flex', alignItems: 'center', border: '1px solid #e3ded6', borderRadius: '12px', background: '#fff', padding: '0 12px', marginBottom: '8px', gap: '8px', width: 'fit-content' }}>
                     <input type='number' value={postalCode} onChange={e => setPostalCode(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') geoPostalCode(postalCode); }} placeholder="Enter postal code" style={{ border: 'none', outline: 'none', fontSize: '14px', padding: '10px 0', background: 'transparent', width: '160px' }} />
-                    <div>
-                        <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
-                        <button onClick={() => {
-                            navigator.geolocation.getCurrentPosition(pos => setUserLocation([pos.coords.latitude, pos.coords.longitude]),
-                                () => setError('Unable to get location. Please enter a postal code instead.')
-                            )
-                        }}>Use my location</button>
-                    </div>
+                    <button onClick={() => geoPostalCode(postalCode)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '36px', padding: '0', color: '#4a2418' }}> ⌕</button>
+                </div>
+                <div className='geolocation_request'>
+                    <button onClick={() => {
+                        navigator.geolocation.getCurrentPosition(pos => setUserLocation([pos.coords.latitude, pos.coords.longitude]),
+                            () => setError('Unable to get location. Please enter a postal code instead.')
+                        )
+                    }}>Use my location</button>
                 </div>
             </div>
             {error && <p style={{ color: '#c0329b', fontSize: '13px', marginTop: '6px' }}>{error}</p>}
