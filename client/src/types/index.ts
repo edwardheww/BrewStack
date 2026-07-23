@@ -23,6 +23,7 @@ export interface Bean {
     roaster: Roaster,
 }
 export type SavedBeanStatus = 'want_to_try' | 'tried' | 'loved' | 'not_for_me';
+
 export interface SavedBean {
     id: string;
     beanId?: string | null;
@@ -47,4 +48,14 @@ export interface SavedBean {
     };
 
     isUnavailable?: boolean;
+}
+
+export interface Outlet {
+    id: string;
+    name: string;
+    branch: string;
+    lat: number;
+    long: number;
+    address: string;
+    colour: string;
 }

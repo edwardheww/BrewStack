@@ -410,5 +410,3 @@ routes.post("/scrape/nylon", async (_req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
-

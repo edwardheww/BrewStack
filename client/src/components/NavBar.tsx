@@ -6,18 +6,18 @@ export default function NavBar() {
     const [email, setEmail] = useState<string | null>(null); // Stores the logged-in user's email.
 
     useEffect(() => { // checks if supabase already has an active session
-        supabase.auth.getSession().then(({ data }) => {
+        supabase.auth.getSession().then(({ data }: { data: any }) => {
             setEmail(data.session?.user.email ?? null);
         });
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { 
+        const { data: listener } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
             setEmail(session?.user.email ?? null);
         });
-        
+
         return () => {
             listener.subscription.unsubscribe();
         };
     }, []);
-    
+
     async function logOut() {
         await supabase.auth.signOut();
         setEmail(null);
@@ -38,7 +38,7 @@ export default function NavBar() {
             ) : (
                 <Link className="nav-auth-link" to="/login">Login</Link>
             )}
-            
+
         </header>
     );
 }
