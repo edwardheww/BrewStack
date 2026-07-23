@@ -23,11 +23,11 @@ routes.get("/beans", async (req, res) => {
     try {
         const { search, roaster, origin, roastLevel, process } = req.query; // Read optional filters from the URL
         const where: Prisma.BeanWhereInput = {};
-        
+
         if (roaster) {
             where.roaster = {
                 name: String(roaster),
-                
+
             }
         }
 
@@ -51,7 +51,7 @@ routes.get("/beans", async (req, res) => {
                 mode: "insensitive",
             };
         }
-            
+
         if (search) {
             const query = String(search);
 
@@ -82,8 +82,8 @@ routes.get("/beans", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-            
-        
+
+
 
 // Return all roasters and the beans linked to each roaster
 routes.get("/roasters", async (_req, res) => {
@@ -100,6 +100,17 @@ routes.get("/roasters", async (_req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+// Return all outlets' information
+routes.get("/outlets", async (req, res) => {
+    try {
+        const outlets = await prisma.outlet.findMany();
+        res.json(outlets);
+    } catch (error) {
+        console.error("Error fetching outlets:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
 // SSE Endpoint that notifies frontend to re-fetch should backend be updated.
 const clients: Response[] = [];
@@ -134,7 +145,7 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
             where: {
                 userId: user.id,
             },
-           // Saved beans use snapshot fields so they still work if the live bean is removed
+            // Saved beans use snapshot fields so they still work if the live bean is removed
             orderBy: {
                 createdAt: "desc",
             },
@@ -164,7 +175,7 @@ routes.get("/me/saved-beans", async (req, res) => { // Return all beans saved by
 
             isUnavailable: saved.beanId === null,
         })));
-    } catch(error) {
+    } catch (error) {
         console.error("Error fetching saved beans:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
@@ -233,7 +244,7 @@ routes.post("/me/saved-beans", async (req, res) => { // Save one bean for the cu
             },
         });
         res.json(savedBean);
-    } catch(error) {
+    } catch (error) {
         console.error("Error saving bean:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
@@ -317,7 +328,7 @@ routes.delete("/me/saved-beans/:savedBeanId", async (req, res) => { // Remove on
         });
 
         res.json({ ok: true });
-    } catch(error) {
+    } catch (error) {
         console.error("Error unsaving bean:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }

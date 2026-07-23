@@ -70,3 +70,13 @@ model SavedBean {
 
   @@unique([userId, beanId])
 }
+
+model Outlet {
+  id String @id @default(cuid())
+  name String
+  branch String
+  lat Float
+  long Float
+  address String
+  colour String
+}
