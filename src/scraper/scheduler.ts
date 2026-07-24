@@ -34,10 +34,16 @@ async function runAllScrapers() {
 }
 
 export async function registerScraperCron() {
+    console.log('Running scraper on startup.');
+    await runAllScrapers();
+    console.log('Startup scraping complete.');
+
     cron.schedule('0 0 * * *', async () => {                // commented this line and added the line below so i can test the scrapers manually//          
     //cron.schedule('* * * * *', async () => {
         console.log('Running daily scraping.');
         await runAllScrapers();
         console.log('Daily scraping complete.');
+    }, {
+        timezone: 'Asia/Singapore'
     });
 }
