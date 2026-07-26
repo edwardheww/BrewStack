@@ -1454,7 +1454,7 @@ Completed work includes:
 
 ## User Testing
 
-BrewStack was tested with 10 participants using a structured feedback form covering first impressions, browsing, filtering, the recommendation quiz, the roaster map, overall design, and likelihood to return.
+BrewStack was tested with 16 participants using a structured feedback form covering first impressions, browsing, filtering, the recommendation quiz, the roaster map, overall design, and likelihood to return.
 
 ### Participant profile
 
