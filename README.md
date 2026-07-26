@@ -372,7 +372,7 @@ roastLevel
 process
 ```
 
-Filtering is done client-side. This is simple and works well at the current data scale. If the catalogue grows significantly, filtering could be moved to the backend with query parameters.
+Filtering is handled via backend query parameters sent from the selected filter state. This keeps the frontend focused on state and rendering rather than filtering logic.
 
 ### Real-time update mechanism
 
@@ -1247,10 +1247,6 @@ Supabase provides both PostgreSQL and Auth, which fits BrewStack's needs:
 - User authentication
 - Access tokens for protected routes
 - Works with Prisma
-
-### Why use client-side filtering first?
-
-The current catalogue size is manageable. Client-side filtering is simpler to build and gives instant UI feedback. Backend filtering can be added later if data volume grows.
 
 ### Why use keyword-based recommendation?
 
