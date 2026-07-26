@@ -874,7 +874,7 @@ flowchart TD
     B --> C["Express returns beans with roaster data"]
     C --> D["Catalog stores beans in state"]
     D --> E["User changes filters"]
-    E --> F["Client-side filtering"]
+    E --> F["Backend filtering (query params)"]
     F --> G["Bean cards render"]
     G --> H["User clicks card"]
     H --> I["Original roaster product page opens"]
