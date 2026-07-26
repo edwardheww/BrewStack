@@ -185,9 +185,9 @@ The map also includes two location features:
 
 After either location method, a radius slider appears. The user can set a search radius from 1 to 50 km. Only roaster branches within that radius are shown on the map, and a circle is drawn to indicate the search area.
 
-### 4. Find My Bean
+### 4. Find My Coffee
 
-Find My Bean is a guided quiz that recommends one coffee based on user preferences.
+Find My Coffee is a guided quiz that recommends one coffee based on user preferences.
 
 The quiz asks five questions:
 
@@ -353,7 +353,7 @@ The key endpoint used by most pages is:
 GET /beans
 ```
 
-Catalog, Home, and Find My Bean all depend on the bean catalogue.
+Catalog, Home, and Find My Coffee all depend on the bean catalogue.
 
 ### Catalogue state and filtering
 
@@ -782,7 +782,7 @@ Used by:
 
 - Home page
 - Catalog page
-- Find My Bean page
+- Find My Coffee page
 
 ### Get all roasters
 
@@ -884,7 +884,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["User opens Find My Bean"] --> B["Frontend fetches beans"]
+    A["User opens Find My Coffee"] --> B["Frontend fetches beans"]
     B --> C["User answers quiz"]
     C --> D["Answers stored in local state"]
     D --> E["scoreBean evaluates each bean"]
@@ -1088,7 +1088,7 @@ The catalogue can be improved with:
 - Better empty states
 - Loading skeletons
 
-### Feature 2: Find My Bean
+### Feature 2: Find My Coffee
 
 #### Goal
 
@@ -1304,7 +1304,7 @@ System testing was carried out manually by the developers using the deployed Bre
 | ID | Description | Technique | Category | Expected Result |
 |---|---|---|---|---|
 | ST-01 | End-to-end: sign up, log in, browse catalogue, save a bean, view it on `/saved-beans` | Black-box | Positive | Bean appears in Saved Beans with correct snapshot data |
-| ST-02 | End-to-end: complete the Find My Bean quiz and follow through to the recommended bean's product page | Black-box | Positive | Recommended bean's "View Details" link opens the correct roaster product page |
+| ST-02 | End-to-end: complete the Find My Coffee quiz and follow through to the recommended bean's product page | Black-box | Positive | Recommended bean's "View Details" link opens the correct roaster product page |
 | ST-03 | Attempt to access `/saved-beans` while logged out | Black-box | Negative | No saved beans are shown; page displays "Log in to view your saved beans." instead of redirecting |
 | ST-04 | Use browser geolocation on the Roaster Map without first entering a postal code | Black-box | Positive | Map recentres on the browser-provided coordinates directly |
 
@@ -1326,7 +1326,7 @@ Roaster branch locations are stored in the `Outlet` table in the database. Addin
 
 ### 4. Recommendation logic is rule-based
 
-Find My Bean uses keyword scoring. It works for clear cases but may miss nuanced flavour relationships or personal preferences.
+Find My Coffee uses keyword scoring. It works for clear cases but may miss nuanced flavour relationships or personal preferences.
 
 ### 5. Saved beans may reference unavailable live beans
 
@@ -1451,6 +1451,7 @@ Completed work includes:
 ## User Testing
 
 BrewStack was tested with 16 participants using a structured feedback form covering first impressions, browsing, filtering, the recommendation quiz, the roaster map, overall design, and likelihood to return.
+Responses: https://docs.google.com/spreadsheets/d/1KFnod6p-h_dldhlQiI80Eu-zmRCtXT_JmDWBXdvHMkU/edit?usp=sharing
 
 ### Participant profile
 
