@@ -1270,7 +1270,7 @@ Tests are organised by **level** (unit, integration, system) and, within each le
 
 ### Unit testing
 
-Unit testing was carried out using automated tests written with Vitest, targeting the helper functions in `FindMyCoffee.ts` (`splitNotes`, `money`, `scoreBean`, `recommendBean`).
+Unit testing was carried out using automated tests written with Vitest, targeting the helper functions in `FindMyCoffee.tsx` (`splitNotes`, `money`, `scoreBean`, `recommendBean`).
 
 | ID | Description | Technique | Category | Expected Result |
 |---|---|---|---|---|
