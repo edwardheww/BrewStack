@@ -26,14 +26,16 @@ Frontend: https://brew-stack.vercel.app
 13. [Local Setup](#local-setup)
 14. [Feature Specifications](#feature-specifications)
 15. [Design Decisions](#design-decisions)
-16. [Known Limitations](#known-limitations)
-17. [Future Improvements](#future-improvements)
-18. [Milestone 2 Progress Summary](#milestone-2-progress-summary)
-19. [Post-Milestone 2 Improvements](#post-milestone-2-improvements)
-20. [Repository Structure](#repository-structure)
-21. [Tech Stack](#tech-stack)
-22. [Deployment Links](#deployment-links)
-23. [Contributors](#contributors)
+16. [Testing](#testing)
+17. [Known Limitations](#known-limitations)
+18. [Future Improvements](#future-improvements)
+19. [Milestone 2 Progress Summary](#milestone-2-progress-summary)
+20. [Post-Milestone 2 Improvements](#post-milestone-2-improvements)
+21. [User Testing](#user-testing)
+22. [Repository Structure](#repository-structure)
+23. [Tech Stack](#tech-stack)
+24. [Deployment Links](#deployment-links)
+25. [Contributors](#contributors)
 
 ---
 
@@ -223,7 +225,7 @@ The result page displays:
 - Brew style
 - Price
 - Reasons for the match
-- View Coffee button
+- View Details button
 - Try Again button
 
 This feature makes the catalogue more accessible to users who are not yet comfortable reading coffee metadata.
@@ -281,7 +283,7 @@ BrewStack follows a three-layer web architecture:
 Playwright scrapers run inside the backend service. The scraper writes normalised data to the database through Prisma. The frontend never scrapes sites directly; it only reads from the backend API.
 
 
-![Component Diagram](docs/component-diagram.png)
+![Architecture](docs/component-diagram.png)
 
 ### Main system responsibilities
 
@@ -478,6 +480,7 @@ Each roaster scraper implements its own `scrape()` method because each roaster w
 | `TiongHoeScraper.ts` | Tiong Hoe | Uses Shopify product JSON and product page HTML parsing |
 | `AlchemistScraper.ts` | Alchemist | Extracts card data and product detail fields |
 | `CommunityCoffeeScraper.ts` | The Community Coffee | Uses Shopify product JSON and description field parsing |
+| `KyuukeiScraper.ts` | Kyuukei Coffee | Uses Shopify product JSON and product page HTML parsing |
 
 ### Scraper output shape
 
@@ -543,9 +546,9 @@ The Prisma schema is located at:
 prisma/schema.prisma
 ```
 
-### Class diagram
+### Entity relationship
 
-![Class Diagram](docs/class-diagram.png)
+![Entity Relationship](docs/class-diagram.png)
 
 ### Current models
 
@@ -730,7 +733,7 @@ It uses Supabase Auth's `getUser()` method to confirm the token belongs to a rea
 
 ### Saved bean creation flow
 
-![Saved Bean Creation Flow](docs/sequence-diagram.png)
+![Sequence: Saved Bean Creation Flow](docs/sequence-diagram.png)
 
 ### Saved beans retrieval flow
 
@@ -1085,21 +1088,7 @@ The catalogue can be improved with:
 - Better empty states
 - Loading skeletons
 
-### Feature 2: Fresh Drops
-
-#### Goal
-
-Highlight recent or currently visible beans from the catalogue.
-
-#### Current behaviour
-
-The Home page and Catalog sidebar use the first few beans from the backend response as fresh drops.
-
-#### Current limitation
-
-Freshness is currently based on ordering rather than a dedicated drop date. The database has `updatedAt`, which could later power a more accurate "latest drops" sort.
-
-### Feature 3: Find My Bean
+### Feature 2: Find My Bean
 
 #### Goal
 
@@ -1140,14 +1129,14 @@ The result page shows:
 - Price
 - Tasting notes
 - Bean metadata
-- View Coffee link
+- View Details link
 - Try Again button
 
 #### Future improvement
 
 The scoring can later be improved with weighted preferences, saved-bean history, and natural-language explanations.
 
-### Feature 4: Roaster Map
+### Feature 3: Roaster Map
 
 #### Goal
 
@@ -1176,7 +1165,7 @@ Postal-code lookup uses:
 https://www.onemap.gov.sg/api/common/elastic/search
 ```
 
-### Feature 5: Login and Signup
+### Feature 4: Login and Signup
 
 #### Goal
 
@@ -1197,7 +1186,7 @@ The navbar reflects auth state:
 - Logged out: Login link
 - Logged in: Logout button
 
-### Feature 6: Saved Beans
+### Feature 5: Saved Beans
 
 #### Goal
 
@@ -1219,6 +1208,20 @@ The saved beans page fetches the user's saved beans from the backend and renders
 #### Backend protection
 
 Saved bean routes require a Supabase Bearer token.
+
+### Feature 6: Fresh Drops
+
+#### Goal
+
+Highlight recent or currently visible beans from the catalogue.
+
+#### Current behaviour
+
+The Home page and Catalog sidebar use the first few beans from the backend response as fresh drops.
+
+#### Current limitation
+
+Freshness is currently based on ordering rather than a dedicated drop date. The database has `updatedAt`, which could later power a more accurate "latest drops" sort.
 
 ---
 
@@ -1252,6 +1255,62 @@ The current catalogue size is manageable. Client-side filtering is simpler to bu
 ### Why use keyword-based recommendation?
 
 For Milestone 2, keyword scoring is transparent and easy to debug. It allows the team to explain why a bean was selected. A more advanced model can be added later, but the current approach is predictable and aligned with the database fields.
+
+---
+
+## Testing
+
+BrewStack was tested by the development team across three levels: unit, integration, and system testing. Unit testing was automated using Vitest; integration and system testing were carried out manually.
+
+### Test organisation
+
+Tests are organised by **level** (unit, integration, system) and, within each level, by **technique**:
+
+- **White-box tests** exercise internal logic directly — for example, calling `scoreBean()` with a specific bean and quiz-answer set and checking the returned score, or calling `splitNotes()` with a known tasting-notes string and checking the resulting array. These require knowledge of how the function or module is implemented internally.
+- **Black-box tests** exercise a feature purely through its external interface (API request, UI action) without reference to how it is implemented — for example, sending a `POST /me/saved-beans` request and checking the HTTP response, or entering a postal code on the Roaster Map and checking that the map recentres.
+- **Positive test cases** confirm expected behaviour with valid input (a well-formed bean object, a logged-in user, a valid postal code).
+- **Negative test cases** confirm the system fails safely or rejects invalid input (a missing required field, an unauthenticated request, a malformed postal code).
+- **Boundary-value test cases** target the edges of a valid input range (e.g. the minimum and maximum values of the roaster-map radius slider, or a rating field at its allowed limits) where off-by-one errors are most likely to surface.
+
+### Unit testing
+
+Unit testing was carried out using automated tests written with Vitest, targeting the helper functions in `FindMyCoffee.ts` (`splitNotes`, `money`, `scoreBean`, `recommendBean`).
+
+| ID | Description | Technique | Category | Expected Result |
+|---|---|---|---|---|
+| UT-01 | `splitNotes()` splits a tasting-notes string on commas and semicolons into an array of trimmed notes | White-box | Positive | `"Berry, Citrus; Floral"` returns `["Berry", "Citrus", "Floral"]` |
+| UT-02 | `splitNotes()` returns only the first three notes when more are provided | White-box | Boundary-value | `"Berry, Citrus, Floral, Chocolate"` returns only `["Berry", "Citrus", "Floral"]` |
+| UT-03 | `money()` formats a numeric price as a Singapore-dollar string | White-box | Positive | `money(22)` returns `"S$22.00"` |
+| UT-04 | `money()` returns a fallback string when price is missing | White-box | Negative | `money(undefined)` returns `"N/A"` |
+| UT-05 | `scoreBean()` scores a bean above zero when its metadata matches the user's quiz answers | White-box | Positive | A fruity filter coffee scored against `{ brew: "Filter coffee", flavour: "Fruity" }` returns a score `> 0` with at least one matching reason |
+| UT-06 | `recommendBean()` ranks the best-matching coffee first among multiple candidates | White-box | Positive | Given a chocolate espresso bean and a fruity filter bean scored against a fruity/filter preference, the fruity filter bean is ranked first |
+
+### Integration testing
+
+Integration testing was carried out manually by testing interactions between the frontend, backend, database, authentication system, and scraper pipeline.
+
+| ID | Description | Technique | Category | Expected Result |
+|---|---|---|---|---|
+| IT-01 | `GET /beans` returns bean records with their related `Roaster` included | Black-box | Positive | Response includes nested roaster object per bean |
+| IT-02 | Save a new bean from the catalogue while logged in | Black-box | Positive | "Saved!" confirmation appears; bean is correctly added to `/saved-beans` |
+| IT-03 | Attempt to save a bean from the catalogue while logged out | Black-box | Negative | User is redirected to `/login`; no `SavedBean` row is created |
+| IT-04 | Attempt to save a bean from the catalogue that has already been saved | Black-box | Negative | "Saved!" message still appears, but the bean shows up only once on `/saved-beans` (no duplicate row) |
+| IT-05 | Unsave a bean from `/saved-beans` that was previously saved | Black-box | Positive | Bean is removed from `/saved-beans`; corresponding `SavedBean` row is deleted |
+| IT-06 | Scraper run inserts beans that are then immediately retrievable via `GET /beans` | Black-box | Positive | Newly scraped beans appear in the API response without a manual restart |
+| IT-07 | Frontend catalogue receives an SSE `update` event after a scraper run completes | Black-box | Positive | `GET /beans` is automatically re-fetched and the catalogue re-renders without a page refresh |
+| IT-08 | Roaster Map postal code search with a malformed postal code (e.g. letters instead of digits) | Black-box | Negative | Inline error shown; map does not recentre |
+| IT-09 | Roaster Map radius slider at its minimum (1 km) and maximum (50 km) bounds | Black-box | Boundary-value | Only outlets within the selected radius are shown at each extreme; no outlets are incorrectly included or excluded at the boundary |
+
+### System testing
+
+System testing was carried out manually by the developers using the deployed BrewStack application as an end user, verifying that the main features worked together across the frontend, backend, database, and authentication services.
+
+| ID | Description | Technique | Category | Expected Result |
+|---|---|---|---|---|
+| ST-01 | End-to-end: sign up, log in, browse catalogue, save a bean, view it on `/saved-beans` | Black-box | Positive | Bean appears in Saved Beans with correct snapshot data |
+| ST-02 | End-to-end: complete the Find My Bean quiz and follow through to the recommended bean's product page | Black-box | Positive | Recommended bean's "View Details" link opens the correct roaster product page |
+| ST-03 | Attempt to access `/saved-beans` while logged out | Black-box | Negative | No saved beans are shown; page displays "Log in to view your saved beans." instead of redirecting |
+| ST-04 | Use browser geolocation on the Roaster Map without first entering a postal code | Black-box | Positive | Map recentres on the browser-provided coordinates directly |
 
 ---
 
@@ -1393,6 +1452,39 @@ Completed work includes:
 
 ---
 
+## User Testing
+
+BrewStack was tested with 10 participants using a structured feedback form covering first impressions, browsing, filtering, the recommendation quiz, the roaster map, overall design, and likelihood to return.
+
+### Participant profile
+
+Most respondents were aged 18–24, with one respondent each in the 25–34 and 55+ ranges. Coffee-drinking frequency ranged from a few times a month to multiple times a day.
+
+### Average scores (out of 5)
+
+| Question | Average |
+|---|---|
+| The app was easy to understand when I first opened it | 4.9 |
+| I found it easy to browse and compare different coffee beans | 4.8 |
+| The coffee information shown was useful for helping me decide what to try | 4.9 |
+| The filters/search features helped me narrow down my choices effectively | 4.9 |
+| The "Find My Coffee" recommendation feature felt helpful | 4.8 |
+| The roaster map made it easier to discover coffee roasters or outlets | 4.8 |
+| The overall design felt clean, pleasant, and suitable for a coffee discovery platform | 4.8 |
+| I would use this app again when looking for specialty coffee | 4.9 |
+
+### Selected feedback
+
+> "I love the app! It's very helpful especially for a novice like me to find suitable coffee!"
+
+> "Simple. Clear. Easy."
+
+> "Keep up the good work."
+
+Scores were consistently high across all measured dimensions, with no participant rating any question below 3. Feedback was uniformly positive, with no negative or critical comments submitted.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -1441,6 +1533,7 @@ BrewStack/
 │       │   ├── BaseScraper.ts
 │       │   ├── CommunityCoffeeScraper.ts
 │       │   ├── HomegroundScraper.ts
+│       │   ├── KyuukeiScraper.ts
 │       │   ├── NylonScraper.ts
 │       │   └── TiongHoeScraper.ts
 │       └── types/
