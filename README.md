@@ -847,10 +847,6 @@ These are development/testing routes for manually triggering selected scrapers.
 
 ## Data Flow
 
-### Data flow sequence
-
-![Sequence Diagram](docs/sequence-diagram.png)
-
 ### Scraped bean ingestion
 
 ```mermaid
