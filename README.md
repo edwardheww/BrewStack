@@ -14,23 +14,26 @@ Frontend: https://brew-stack.vercel.app
 1. [Project Overview](#project-overview)
 2. [Problem Statement](#problem-statement)
 3. [Core Features](#core-features)
-5. [System Design](#system-design)
-6. [Frontend Architecture](#frontend-architecture)
-7. [Backend Architecture](#backend-architecture)
-8. [Scraper Architecture](#scraper-architecture)
-9. [Database Design](#database-design)
-10. [Authentication and Saved Beans](#authentication-and-saved-beans)
-11. [API Reference](#api-reference)
-12. [Data Flow](#data-flow)
-13. [Deployment Design](#deployment-design)
-14. [Local Setup](#local-setup)
-15. [Feature Specifications](#feature-specifications)
-16. [Design Decisions](#design-decisions)
-17. [Known Limitations](#known-limitations)
-18. [Future Improvements](#future-improvements)
-19. [Milestone 2 Progress Summary](#milestone-2-progress-summary)
-20. [Post-Milestone 2 Improvements](#post-milestone-2-improvements)
-21. [Contributors](#contributors)
+4. [System Design](#system-design)
+5. [Frontend Architecture](#frontend-architecture)
+6. [Backend Architecture](#backend-architecture)
+7. [Scraper Architecture](#scraper-architecture)
+8. [Database Design](#database-design)
+9. [Authentication and Saved Beans](#authentication-and-saved-beans)
+10. [API Reference](#api-reference)
+11. [Data Flow](#data-flow)
+12. [Deployment Design](#deployment-design)
+13. [Local Setup](#local-setup)
+14. [Feature Specifications](#feature-specifications)
+15. [Design Decisions](#design-decisions)
+16. [Known Limitations](#known-limitations)
+17. [Future Improvements](#future-improvements)
+18. [Milestone 2 Progress Summary](#milestone-2-progress-summary)
+19. [Post-Milestone 2 Improvements](#post-milestone-2-improvements)
+20. [Repository Structure](#repository-structure)
+21. [Tech Stack](#tech-stack)
+22. [Deployment Links](#deployment-links)
+23. [Contributors](#contributors)
 
 ---
 
@@ -171,8 +174,6 @@ Supported map roaster groups include:
 - Alchemist Coffee
 - The Community Coffee
 - Kyuukei Coffee
-
-Roaster branch data is stored in the `Outlet` table in Supabase and fetched via `GET /outlets` on page load.
 
 The map also includes two location features:
 
