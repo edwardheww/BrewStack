@@ -3,9 +3,9 @@ import { type Bean } from '../types/index.js';
 import NavBar from '../components/NavBar.js';
 import { supabase } from '../lib/supabase.js';
 
-type AnswerKey = 'brew' | 'flavour' | 'adventure' | 'cup' | 'occasion';
+export type AnswerKey = 'brew' | 'flavour' | 'adventure' | 'cup' | 'occasion';
 
-type AnswerMap = Partial<Record<AnswerKey, string>>;
+export type AnswerMap = Partial<Record<AnswerKey, string>>;
 
 type Question = {
     key: AnswerKey;
@@ -43,17 +43,17 @@ const questions: Question[] = [ // questions for the quiz to figure out what kin
 ];
 
 
-function splitNotes(notes?: string) { // Splits a bean's tasting notes into smaller note pills.
+export function splitNotes(notes?: string) { // Splits a bean's tasting notes into smaller note pills.
     if (!notes) return [];
     return notes.split(/,|;/).map(note => note.trim()).filter(Boolean).slice(0, 3);
 }
 
-function money(price?: number) { // Formats the price for display
+export function money(price?: number) { // Formats the price for display
     if (!price) return 'N/A';
     return `S$${price.toFixed(2)}`;
 }
 
-function hasText(bean: Bean, words: string[]) {
+export function hasText(bean: Bean, words: string[]) {
     const text = [
         bean.flavourNotes,
         bean.roastLevel,
@@ -66,7 +66,7 @@ function hasText(bean: Bean, words: string[]) {
 
 }
 
-function scoreBean(bean: Bean, answers: AnswerMap) { // Scores one bean against the user's quiz answers.
+export function scoreBean(bean: Bean, answers: AnswerMap) { // Scores one bean against the user's quiz answers.
     let score = 0;
     const reasons: string[] = [];
 
@@ -154,7 +154,7 @@ function scoreBean(bean: Bean, answers: AnswerMap) { // Scores one bean against 
     return { score, reasons };
 }
 
-function recommendBean(beans: Bean[], answers: AnswerMap) { //score all beans, rank them form, best to worst
+export function recommendBean(beans: Bean[], answers: AnswerMap) { //score all beans, rank them form, best to worst
     const scored = beans
         .map(bean => ({ bean, ...scoreBean(bean, answers) }))
         .filter(item => item.score >= 0)
@@ -167,7 +167,7 @@ function recommendBean(beans: Bean[], answers: AnswerMap) { //score all beans, r
     return scored.slice(0, 3); // return top three ranked matches
 }
 
-function matchPoints(score: number, bestScore: number) { // scale the score to 100 for display
+export function matchPoints(score: number, bestScore: number) { // scale the score to 100 for display
     if (bestScore <= 0) return 70;
     return Math.max(60, Math.round((score / bestScore) * 100));
 }
