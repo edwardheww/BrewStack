@@ -13,8 +13,7 @@ Frontend: https://brew-stack.vercel.app
 
 1. [Project Overview](#project-overview)
 2. [Problem Statement](#problem-statement)
-3. [Current Milestone 2 Scope](#current-milestone-2-scope)
-4. [Core Features](#core-features)
+3. [Core Features](#core-features)
 5. [System Design](#system-design)
 6. [Frontend Architecture](#frontend-architecture)
 7. [Backend Architecture](#backend-architecture)
@@ -30,7 +29,8 @@ Frontend: https://brew-stack.vercel.app
 17. [Known Limitations](#known-limitations)
 18. [Future Improvements](#future-improvements)
 19. [Milestone 2 Progress Summary](#milestone-2-progress-summary)
-20. [Contributors](#contributors)
+20. [Post-Milestone 2 Improvements](#post-milestone-2-improvements)
+21. [Contributors](#contributors)
 
 ---
 
@@ -65,6 +65,7 @@ The current implementation supports:
 - Tiong Hoe
 - Alchemist
 - The Community Coffee
+- Kyuukei Coffee
 
 The frontend lets users browse these beans through a catalogue, use filters, click through to the original roaster product page, explore roaster locations on a map, take a quiz to get one recommended bean, log in through Supabase Auth, and save beans for later.
 
@@ -98,35 +99,6 @@ Users may find beans they want to revisit, compare, or buy later. Without accoun
 
 ---
 
-## Current Milestone 2 Scope
-
-Milestone 1 focused on proving that the data pipeline could work: scrape roaster sites, store beans in Supabase PostgreSQL, expose them through an Express API, and render a catalogue in React.
-
-Milestone 2 expands that proof of concept into a more complete discovery product. The current repository includes:
-
-- A redesigned landing page
-- A live bean catalogue
-- Filter controls for catalogue discovery
-- Product cards that link to real roaster product pages
-- A fresh drops preview
-- Popular tasting note summary
-- A roaster map with Singapore locations
-- Postal-code search on the map
-- Colour-coded roaster markers
-- A guided Find My Bean quiz
-- Recommendation scoring logic
-- Supabase Auth login and signup
-- Navbar login/logout state
-- Saved beans backend model and routes
-- Saved beans frontend page
-- Scheduled scraper registration
-- Scrapers for five supported roasters
-- Railway-oriented backend deployment configuration
-- Vercel frontend routing configuration
-
-The scope is intentionally focused. BrewStack is not trying to replace roaster websites or handle checkout directly. Instead, the app acts as a discovery layer that helps users decide what they want, then sends them to the roaster's real product page.
-
----
 
 ## Core Features
 
@@ -185,13 +157,11 @@ The page fetches beans from the backend and shows the first few as "This Week's 
 
 The Roasters page contains an interactive Leaflet map through `react-leaflet`.
 
-The map currently uses a hardcoded list of Singapore roaster branches. Each marker includes:
+Branch data is fetched from the `Outlet` table in Supabase via `GET /outlets` on page load. The markers are colour-coded by roaster with a legend below the map for easy reference. Clicking on a marker shows:
 
 - Roaster name
 - Branch name
 - Address
-- Latitude and longitude
-- Roaster-specific marker colour
 
 Supported map roaster groups include:
 
@@ -200,10 +170,17 @@ Supported map roaster groups include:
 - Tiong Hoe Specialty Coffee
 - Alchemist Coffee
 - The Community Coffee
+- Kyuukei Coffee
 
-The map also includes postal-code lookup using Singapore's OneMap API. When a user enters a postal code, BrewStack fetches the postal-code location and recenters the map around it.
+Roaster branch data is stored in the `Outlet` table in Supabase and fetched via `GET /outlets` on page load.
 
-This feature is useful for users who want to discover roasters near them or plan where to buy coffee physically.
+The map also includes two location features:
+
+**Postal code search** — the user enters a Singapore postal code, which is geocoded using the OneMap API. The map recenters on the returned coordinates and shows a location pin.
+
+**Browser geolocation** — the user can click "Use my location" to allow the browser to provide their current coordinates directly. The map recenters without requiring a postal code.
+
+After either location method, a radius slider appears. The user can set a search radius from 1 to 50 km. Only roaster branches within that radius are shown on the map, and a circle is drawn to indicate the search area.
 
 ### 4. Find My Bean
 
@@ -259,10 +236,7 @@ The frontend creates a Supabase client using:
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 
-The login page allows users to:
-
-- Create an account
-- Log in with email and password
+Login (`/login`) and signup (`/signup`) are separate pages. The login page allows users to sign in with email and password. The signup page allows users to create a new account.
 
 The navbar listens for Supabase auth state changes. If a user is logged in, the navbar shows a Logout button. If no user is logged in, it shows a Login link.
 
@@ -270,26 +244,28 @@ Passwords are not stored directly in the BrewStack application database. Authent
 
 ### 6. Saved Beans
 
-Saved Beans lets logged-in users store coffees they want to revisit or buy later.
+Saved Beans lets logged-in users store coffees they want to revisit or buy later, and annotate them with personal context.
 
 The flow is:
 
 1. User logs in with Supabase Auth
 2. User clicks Save Bean on a catalog card
 3. Frontend retrieves the Supabase access token
-4. Frontend sends a `POST /me/saved-beans` request with the token
+4. Frontend sends a `POST /me/saved-beans` request with the token and a snapshot of the bean's metadata
 5. Backend verifies the token with Supabase
 6. Backend upserts the user into the local `User` table
-7. Backend creates a `SavedBean` row linking the user and bean
-8. User can view saved beans on `/saved-beans`
-9. User can remove a bean with Unsave
+7. Backend creates a `SavedBean` row with the snapshot data
+8. A "Saved!" confirmation appears on the card
+9. User can view and manage saved beans on `/saved-beans`
 
-Saved bean cards display the same core information as catalogue cards, with additional actions:
+Saved bean cards display core bean information along with additional user actions:
 
-- View Coffee
-- Unsave
+- View Coffee — opens the original roaster product page
+- Unsave — removes the bean from the saved list
+- Status — mark as "want to try", "tried already", or "don't like it"
+- Notes — add a personal comment to the saved bean
 
-This is the first step toward personalisation. Future recommendation logic may use saved beans to infer preferences.
+Saved beans use a snapshot model. Bean metadata is stored at save time so the record persists and remains useful even if the live bean is later removed from the catalogue.
 
 ---
 
@@ -303,17 +279,8 @@ BrewStack follows a three-layer web architecture:
 
 Playwright scrapers run inside the backend service. The scraper writes normalised data to the database through Prisma. The frontend never scrapes sites directly; it only reads from the backend API.
 
-  User["User"] --> Frontend["React + TypeScript Frontend"]
-  Frontend --> API["Express API"]
-  API --> Prisma["Prisma ORM"]
-  Prisma --> DB["Supabase PostgreSQL"]
-  API --> Auth["Supabase Auth"]
-  Scheduler["node-cron Scheduler"] --> Scrapers["Playwright Scrapers"]
-  Scrapers --> RoasterSites["Roaster Websites"]
-  Scrapers --> API
-  API --> SSE["Server-Sent Events"]
-  SSE --> Frontend
 
+![Component Diagram](docs/component-diagram.png)
 
 ### Main system responsibilities
 
@@ -353,7 +320,8 @@ Routes are defined in `client/src/App.tsx`.
 | `/catalog` | `Catalog.tsx` | Main bean catalogue |
 | `/roasters` | `Roasters.tsx` | Interactive roaster map |
 | `/find-my-coffee` | `FindMyCoffee.tsx` | Guided recommendation quiz |
-| `/login` | `Login.tsx` | Login and signup page |
+| `/login` | `Login.tsx` | Login page |
+| `/signup` | `Signup.tsx` | Signup page |
 | `/saved-beans` | `SavedBeans.tsx` | User's saved coffees |
 
 ### Shared navigation
@@ -405,11 +373,11 @@ Filtering is done client-side. This is simple and works well at the current data
 
 ### Real-time update mechanism
 
-The catalogue subscribes to the backend `/events` route using `EventSource`.
+The catalogue subscribes to the backend `/events` route using the browser's native `EventSource` API, which establishes a persistent Server-Sent Events (SSE) connection.
 
-When the backend finishes a scraper run, it calls `notifyClients()`. Connected clients receive an update event and can re-fetch beans.
+When the backend finishes a scraper run, it calls `notifyClients()`, which writes a `data: update` message to every active SSE connection. Connected frontend clients receive this message and immediately re-fetch `GET /beans`, updating the catalogue without requiring a page refresh.
 
-This prevents users from needing to manually refresh the page after a scrape run.
+A keepalive ping is sent every 15 seconds to prevent Railway's proxy from closing idle SSE connections due to inactivity timeouts. If the connection drops (for example, during a backend redeploy), `EventSource` automatically attempts to reconnect.
 
 ### UI design direction
 
@@ -450,6 +418,7 @@ The entry point is `index.ts`, which:
 The backend is responsible for:
 
 - Serving bean and roaster data
+- Serving outlet location data for the roaster map
 - Running scraper jobs
 - Writing scraped beans to the database
 - Verifying Supabase Auth tokens
@@ -573,18 +542,24 @@ The Prisma schema is located at:
 prisma/schema.prisma
 ```
 
+### Class diagram
+
+![Class Diagram](docs/class-diagram.png)
+
 ### Current models
 
-The database currently has four main application models:
+The database currently has five main application models:
 
 1. `Roaster`
 2. `Bean`
 3. `User`
 4. `SavedBean`
+5. `Outlet`
 
 ```mermaid
 erDiagram
     ROASTER ||--o{ BEAN : has
+    ROASTER ||--o{ OUTLET : has
     BEAN ||--o{ SAVEDBEAN : saved_as
     USER ||--o{ SAVEDBEAN : owns
 
@@ -619,7 +594,31 @@ erDiagram
         string id
         string userId
         string beanId
+        string beanName
+        string roasterName
+        float price
+        string url
+        string imageUrl
+        string region
+        string roastLevel
+        string varietal
+        string flavourNotes
+        string processingMethod
+        string status
+        string notes
+        int rating
         datetime createdAt
+    }
+
+    OUTLET {
+        string id
+        string name
+        string branch
+        float lat
+        float long
+        string address
+        string colour
+        string roasterId
     }
 ```
 
@@ -629,11 +628,12 @@ erDiagram
 
 ```prisma
 model Roaster {
-  id      String @id @default(cuid())
-  name    String @unique
+  id      String   @id @default(cuid())
+  name    String   @unique
   website String
 
-  beans Bean[]
+  beans   Bean[]
+  outlets Outlet[]
 }
 ```
 
@@ -690,19 +690,55 @@ The `id` comes from Supabase Auth. BrewStack does not store passwords in this ta
 
 ```prisma
 model SavedBean {
-  id        String   @id @default(cuid())
-  userId    String
-  beanId    String
-  createdAt DateTime @default(now())
+  id                String   @id @default(cuid())
+  userId            String
+  beanId            String?
+  createdAt         DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
-  bean Bean @relation(fields: [beanId], references: [id])
+  status            String?  @default("want_to_try")
+  notes             String?
+  rating            Int?
+
+  beanName          String
+  roasterName       String?
+  price             Float?
+  url               String?
+  imageUrl          String?
+  region            String?
+  roastLevel        String?
+  varietal          String?
+  flavourNotes      String?
+  processingMethod  String?
+
+  user User  @relation(fields: [userId], references: [id])
+  bean Bean? @relation(fields: [beanId], references: [id], onDelete: SetNull)
 
   @@unique([userId, beanId])
 }
 ```
 
-The unique constraint on `[userId, beanId]` prevents a user from saving the same bean multiple times.
+The unique constraint on `[userId, beanId]` prevents a user from saving the same bean twice. `SavedBean` stores a snapshot of the bean's metadata at save time so the record remains useful even if the live bean is later removed from the catalogue. `beanId` is nullable — if a bean is deleted, the saved record is preserved with the snapshot fields intact and `beanId` set to null.
+
+### Outlet model
+
+`Outlet` stores the physical branch locations of supported roasters, used to populate the roaster map.
+
+```prisma
+model Outlet {
+  id      String @id @default(cuid())
+  name    String
+  branch  String
+  lat     Float
+  long    Float
+  address String
+  colour  String
+
+  roasterId String?
+  roaster   Roaster? @relation(fields: [roasterId], references: [id])
+}
+```
+
+Each outlet is linked to a roaster via the `roasterId` foreign key, and carries its own lat/lng coordinates, branch label, address, and display colour. The colour field drives the colour-coded markers on the roaster map. `roasterId` is nullable so outlets can exist without a matched roaster if needed.
 
 ---
 
@@ -727,8 +763,11 @@ VITE_SUPABASE_ANON_KEY
 
 The Login page calls:
 
-- `supabase.auth.signUp()`
 - `supabase.auth.signInWithPassword()`
+
+The Signup page calls:
+
+- `supabase.auth.signUp()`
 
 The navbar calls:
 
@@ -756,24 +795,7 @@ It uses Supabase Auth's `getUser()` method to confirm the token belongs to a rea
 
 ### Saved bean creation flow
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant F as React Frontend
-    participant S as Supabase Auth
-    participant B as Express Backend
-    participant D as PostgreSQL DB
-
-    U->>F: Clicks Save Bean
-    F->>S: Gets current session
-    S-->>F: Returns access token
-    F->>B: POST /me/saved-beans with Bearer token
-    B->>S: Verify token
-    S-->>B: Return authenticated user
-    B->>D: Upsert User
-    B->>D: Upsert SavedBean relation
-    B-->>F: Return saved record
-```
+![Saved Bean Creation Flow](docs/sequence-diagram.png)
 
 ### Saved beans retrieval flow
 
@@ -832,6 +854,14 @@ GET /roasters
 
 Returns all roasters with their beans included.
 
+### Get all outlets
+
+```http
+GET /outlets
+```
+
+Returns all roaster branch locations. Used by the roaster map to render markers.
+
 
 ### Get saved beans
 
@@ -882,6 +912,10 @@ These are development/testing routes for manually triggering selected scrapers.
 ---
 
 ## Data Flow
+
+### Data flow sequence
+
+![Sequence Diagram](docs/sequence-diagram.png)
 
 ### Scraped bean ingestion
 
@@ -950,6 +984,8 @@ Vercel serves the React app as a static frontend. The `client/vercel.json` file 
 /roasters
 /find-my-coffee
 /saved-beans
+/login
+/signup
 ```
 
 Without this rewrite, refreshing on a nested route may cause a 404.
@@ -1092,7 +1128,7 @@ Allow users to browse all currently scraped coffees from supported Singapore roa
 
 #### Current behaviour
 
-The catalogue fetches all beans once on page load and stores them in React state. Filters are applied client-side. Each bean card opens the original roaster product URL in a new tab.
+The catalogue fetches all beans once on page load and stores them in React state. Filters are applied via backend query parameters. Text search allows users to find beans by name or tasting note. Each bean card opens the original roaster product URL in a new tab. Filter category headers are labelled (e.g. `--- Roaster ---`) so users can distinguish category names from filter values.
 
 #### Data shown
 
@@ -1114,8 +1150,6 @@ If the backend fetch fails, the error is logged in the browser console.
 
 The catalogue can be improved with:
 
-- Backend query filtering
-- Search by bean name
 - Sort by price or freshness
 - Better empty states
 - Loading skeletons
@@ -1190,11 +1224,18 @@ Help users find specialty coffee roasters and branches around Singapore.
 
 #### Current behaviour
 
-The map uses Leaflet with Carto map tiles. Roasters are shown as colour-coded markers. Users can enter a postal code to recenter the map.
+The map uses Leaflet with Carto map tiles. Roasters are shown as colour-coded markers with a legend below the map. Clicking a marker shows the roaster name, branch, and address.
+
+Users can locate themselves on the map in two ways:
+
+- **Postal code search** — enter a Singapore postal code, geocoded via the OneMap API. The map recenters and shows a pin at the result.
+- **Browser geolocation** — click "Use my location" to let the browser provide coordinates directly. Invalid postal codes show an inline error message rather than failing silently.
+
+Once a location is set, a radius slider appears. The user can filter visible markers to only show branches within 1–50 km, with a circle drawn on the map to indicate the search area.
 
 #### Data source
 
-Roaster branches are currently hardcoded in the frontend component.
+Roaster branch data is stored in the `Outlet` table in Supabase and fetched via `GET /outlets` on page load. This allows branch data to be updated without editing frontend code.
 
 #### External dependency
 
@@ -1204,10 +1245,6 @@ Postal-code lookup uses:
 https://www.onemap.gov.sg/api/common/elastic/search
 ```
 
-#### Future improvement
-
-Roaster branch data can be moved into the database, allowing admins or scrapers to update it without editing frontend code.
-
 ### Feature 5: Login and Signup
 
 #### Goal
@@ -1216,11 +1253,11 @@ Allow users to create accounts and log in so personal features can persist.
 
 #### Current behaviour
 
-Users enter email and password. Supabase handles account creation and authentication.
+Login (`/login`) and signup (`/signup`) are separate pages. Users enter email and password. Supabase handles account creation and authentication.
 
 #### Output
 
-After login, the user is redirected to the catalogue.
+After login or signup, the user is redirected to the catalogue.
 
 #### Navbar integration
 
@@ -1233,31 +1270,24 @@ The navbar reflects auth state:
 
 #### Goal
 
-Allow logged-in users to save beans and view them later.
+Allow logged-in users to save beans and manage their personal coffee list.
 
 #### Current behaviour
 
-From the catalogue, logged-in users can save a bean. If they are not logged in, the app redirects them to the login page.
+From the catalogue, logged-in users can save a bean. A "Saved!" confirmation appears immediately after saving. If they are not logged in, the app redirects them to the login page.
 
-The saved beans page fetches the user's saved beans from the backend and renders them as cards.
+The saved beans page fetches the user's saved beans from the backend and renders them as cards. Saved beans use a snapshot model — bean metadata is stored at save time, so the record persists even if the live bean is later removed from the catalogue.
 
 #### Saved bean actions
 
-- View Coffee
-- Unsave
+- View Coffee — opens the original roaster product page
+- Unsave — removes the bean from the saved list
+- Status — mark as "want to try", "tried already", or "don't like it"
+- Notes — add a personal comment to the saved bean
 
 #### Backend protection
 
 Saved bean routes require a Supabase Bearer token.
-
-#### Future improvement
-
-Saved beans can support:
-
-- Notes by the user
-- Tried / want to try status
-- Ratings
-- Personalised recommendations
 
 ---
 
@@ -1304,17 +1334,17 @@ Scrapers depend on roaster site structure. If a roaster changes class names, pro
 
 Some roasters publish detailed metadata. Others provide fewer fields. BrewStack handles this by allowing nullable fields, but users may see `N/A` for missing values.
 
-### 3. Map roaster locations are hardcoded
+### 3. Map roaster locations require manual updates
 
-The map currently uses a static list of branches. This is reliable for Milestone 2, but it is not yet connected to the database.
+Roaster branch locations are stored in the `Outlet` table in the database. Adding or updating a branch requires a manual database insert rather than being driven automatically by the scraper.
 
 ### 4. Recommendation logic is rule-based
 
 Find My Bean uses keyword scoring. It works for clear cases but may miss nuanced flavour relationships or personal preferences.
 
-### 5. Saved beans depend on current bean records
+### 5. Saved beans may reference unavailable live beans
 
-Saved beans reference current `Bean` records. If a bean is removed from the catalogue during a refresh, the saved relationship may no longer behave like a long-term historical archive. A future design could preserve unavailable beans separately.
+Saved beans use a snapshot model that preserves metadata even when the live bean is removed. However the link to the original product page may break if the roaster removes or moves that page.
 
 
 ---
@@ -1325,11 +1355,8 @@ Saved beans reference current `Bean` records. If a bean is removed from the cata
 
 Add:
 
-- Text search
 - Sort by price
 - Sort by recently updated
-- Sort by roaster
-- Sort by process
 - Sort by tasting note similarity
 
 ### More roasters
@@ -1375,12 +1402,9 @@ An admin view could allow maintainers to:
 
 ### More user features
 
-Potential account features:
+Potential future account features:
 
 - Favourite roasters
-- Tried beans
-- Private notes
-- Personal ratings
 - Recommendation history
 
 ---
@@ -1418,6 +1442,26 @@ Completed work includes:
 
 ---
 
+## Post-Milestone 2 Improvements
+
+Between Milestone 2 and Milestone 3, BrewStack received a range of refinements across UX, data integrity, and platform coverage.
+
+Completed work includes:
+
+- Labelled filter category headers in the catalogue so users can distinguish category names from filter values
+- Added error feedback for invalid postal codes and geolocation failures on the roaster map so features never fail silently
+- Added visual confirmation feedback when a user saves a bean
+- Migrated roaster branch locations from hardcoded frontend data into the `Outlet` database table, allowing updates without code changes
+- Added browser geolocation as an alternative to postal code input on the roaster map
+- Separated login and signup into distinct pages
+- Added saved bean status options — "want to try", "tried already", "don't like it" — and a personal notes field for each saved bean
+- Added backend query filtering support
+- Added catalogue text search
+- Added snapshot-based saved bean persistence so saved records survive bean removal from the live catalogue
+- Added Kyuukei Coffee scraper and outlet entries
+
+---
+
 ## Repository Structure
 
 ```text
@@ -1438,7 +1482,8 @@ BrewStack/
 │   │   │   ├── Home.tsx
 │   │   │   ├── Login.tsx
 │   │   │   ├── Roasters.tsx
-│   │   │   └── SavedBeans.tsx
+│   │   │   ├── SavedBeans.tsx
+│   │   │   └── Signup.tsx
 │   │   ├── types/
 │   │   │   └── index.ts
 │   │   ├── App.tsx
