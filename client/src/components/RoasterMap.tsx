@@ -89,7 +89,7 @@ export default function RoasterMap() {
             <div className='map_component'>
                 <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: '400px', width: '100%', border: '6px solid #fff', borderRadius: '20px', marginTop: '6px' }}>
                     <MapCenter location={userLocation} />
-                    <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap contributors" />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
                     {
                         visibleRoasters.map(roaster => {
                             const icon = L.divIcon({
