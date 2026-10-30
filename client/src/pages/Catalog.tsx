@@ -114,7 +114,7 @@ function BeanCard({ bean }: { bean: Bean; }) {
             <article className="bean-card">
                 <div className="bean-image">
                     {bean.imageUrl ? (
-                        <img src={bean.imageUrl} alt={bean.name} />
+                        <img src={bean.imageUrl} alt={bean.name} loading="lazy" decoding="async" />
                     ) : (
                         <span>Coffee Image</span>
                     )}
@@ -167,6 +167,20 @@ function BeanCard({ bean }: { bean: Bean; }) {
     );
 }
 
+function SkeletonCard() {
+    return (
+        <article className="bean-card skeleton-card" aria-hidden="true">
+            <div className="bean-image skeleton-block" />
+            <div className="bean-body">
+                <div className="skeleton-line skeleton-block" style={{ width: '70%', height: '16px' }} />
+                <div className="skeleton-line skeleton-block" style={{ width: '40%' }} />
+                <div className="skeleton-line skeleton-block" style={{ width: '90%', marginTop: '20px' }} />
+                <div className="skeleton-line skeleton-block" style={{ width: '60%' }} />
+            </div>
+        </article>
+    );
+}
+
 function Sidebar({ beans }: { beans: Bean[] }) {
     const popularNotes = useMemo(() => {
         const counts = new Map<string, number>();
@@ -215,6 +229,8 @@ function Sidebar({ beans }: { beans: Bean[] }) {
 
 export default function Catalog() {
     const [beans, setBeans] = useState<Bean[]>([]);
+    const [loading, setLoading] = useState(true); // true until the first response (or error) arrives
+    const [slowLoad, setSlowLoad] = useState(false); // the free-tier backend can take ~a minute to wake up
     const [searchQuery, setSearchQuery] = useState(''); // store what user types in the search bar
 
     const [filters, setFilters] = useState<Filters>({
@@ -252,12 +268,23 @@ export default function Catalog() {
     }
     
 
-    function fetchBeans() { // Fetch beans based on current search and filter criteria
+    function fetchBeans(showLoading = true) { // Fetch beans based on current search and filter criteria
+        if (showLoading) setLoading(true);
         fetch(buildBeansUrl())
             .then(response => response.json())
             .then(data => setBeans(data))
-            .catch(error => console.error('Error fetching beans:', error));
+            .catch(error => console.error('Error fetching beans:', error))
+            .finally(() => setLoading(false));
     }
+
+    useEffect(() => {
+        if (!loading) {
+            setSlowLoad(false);
+            return;
+        }
+        const timer = setTimeout(() => setSlowLoad(true), 4000);
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     // filtering now happening through backend, so we can just fetch beans whenever searchQuery or filters change
     useEffect(() => {
@@ -272,7 +299,7 @@ export default function Catalog() {
         eventSource.onerror = (e) => console.log('SSE error:', e);
         eventSource.onmessage = () => {
             fetch(`${import.meta.env.VITE_API_URL}/beans`)
-                fetchBeans();
+                fetchBeans(false); // refresh silently, no skeleton
         };
         return () => eventSource.close();
     }, []);
@@ -306,7 +333,14 @@ export default function Catalog() {
 
                     <FilterBar filters={filters} setFilters={setFilters} />
 
-                    {beans.length > 0 ? (
+                    {loading ? (
+                        <>
+                            {slowLoad && <p className="loading-note">Waking up the server, this can take up to a minute…</p>}
+                            <div className="bean-grid" role="status" aria-label="Loading beans">
+                                {Array.from({ length: 6 }, (_, i) => <SkeletonCard key={i} />)}
+                            </div>
+                        </>
+                    ) : beans.length > 0 ? (
                         <div className="bean-grid">
                             {beans.map(bean => (
                                 <BeanCard key={bean.id} bean={bean} />

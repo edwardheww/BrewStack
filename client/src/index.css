@@ -1495,3 +1495,29 @@ body {
     font-size: 0.85rem;
     font-weight: 600;
 }
+.skeleton-block {
+  background: linear-gradient(90deg, #e9e5df 25%, #f3f0eb 50%, #e9e5df 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 12px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.loading-note {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #7a665d;
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block { animation: none; }
+}
