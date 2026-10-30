@@ -1,7 +1,8 @@
-FROM mcr.microsoft.com/playwright:v1.52.0-noble
+FROM node:22-slim
 
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
+COPY . .
 EXPOSE 8080
 CMD ["sh", "-c", "npx prisma generate && node --import tsx/esm index.ts"]

@@ -1,4 +1,3 @@
-import * as cron from 'node-cron';
 import { HomegroundScraper } from './scrapers/HomegroundScraper.js';
 import { NylonScraper } from './scrapers/NylonScraper.js';
 import { TiongHoeScraper } from './scrapers/TiongHoeScraper.js';
@@ -6,8 +5,7 @@ import { AlchemistScraper } from './scrapers/AlchemistScraper.js';
 import { CommunityCoffeeScraper } from './scrapers/CommunityCoffeeScraper.js';
 import { KyuukeiScraper } from './scrapers/KyuukeiScraper.js';
 import { Roaster } from './types/index.js';
-import { clearDb, upsertScrapedBeans } from '../db/upsert.js';
-import { notifyClients } from '../routes/index.js';
+import { upsertScrapedBeans } from '../db/upsert.js';
 
 const scrapers = [
     new HomegroundScraper(new Roaster('hg', 'HomeGround', 'https://homegroundcoffeeroasters.com/collections/coffees-specialty')),
@@ -18,9 +16,7 @@ const scrapers = [
     new KyuukeiScraper(new Roaster('kyu', 'Kyuukei Coffee', 'https://kyuukeicoffee.com/collections/coffee-beans')),
 ]
 
-async function runAllScrapers() {
-    clearDb();
-
+export async function runAllScrapers() {
     for (const scraper of scrapers) {
         try {
             const result = await scraper.run();
@@ -29,21 +25,4 @@ async function runAllScrapers() {
         }
         catch (error: unknown) { console.log(error); }
     }
-
-    notifyClients()
-}
-
-export async function registerScraperCron() {
-    console.log('Running scraper on startup.');
-    await runAllScrapers();
-    console.log('Startup scraping complete.');
-
-    cron.schedule('0 0 * * *', async () => {                // commented this line and added the line below so i can test the scrapers manually//          
-    //cron.schedule('* * * * *', async () => {
-        console.log('Running daily scraping.');
-        await runAllScrapers();
-        console.log('Daily scraping complete.');
-    }, {
-        timezone: 'Asia/Singapore'
-    });
 }

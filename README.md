@@ -277,10 +277,10 @@ Saved beans use a snapshot model. Bean metadata is stored at save time so the re
 BrewStack follows a three-layer web architecture:
 
 1. React frontend hosted on Vercel
-2. Express backend hosted on Railway
+2. Express backend hosted on Render (free tier)
 3. PostgreSQL database hosted through Supabase
 
-Playwright scrapers run inside the backend service. The scraper writes normalised data to the database through Prisma. The frontend never scrapes sites directly; it only reads from the backend API.
+Playwright scrapers run as a nightly GitHub Actions job, separate from the API server. The scraper writes normalised data to the database through Prisma. The frontend never scrapes sites directly; it only reads from the backend API.
 
 
 ![Architecture](docs/component-diagram.png)
@@ -295,8 +295,8 @@ Playwright scrapers run inside the backend service. The scraper writes normalise
 | Supabase PostgreSQL | Persistent storage for roasters, beans, users, saved beans |
 | Supabase Auth | Account creation, login, session tokens |
 | Playwright | Browser automation for scraping roaster websites |
-| node-cron | Schedules recurring scraper runs |
-| Railway | Backend hosting |
+| GitHub Actions | Runs the nightly scraper job (`.github/workflows/scrape.yml`) |
+| Render | Backend hosting |
 | Vercel | Frontend hosting |
 | Leaflet | Interactive map rendering |
 | OneMap API | Postal-code geocoding for Singapore map search |
@@ -378,9 +378,9 @@ Filtering is handled via backend query parameters sent from the selected filter 
 
 The catalogue subscribes to the backend `/events` route using the browser's native `EventSource` API, which establishes a persistent Server-Sent Events (SSE) connection.
 
-When the backend finishes a scraper run, it calls `notifyClients()`, which writes a `data: update` message to every active SSE connection. Connected frontend clients receive this message and immediately re-fetch `GET /beans`, updating the catalogue without requiring a page refresh.
+When `notifyClients()` is called, it writes a `data: update` message to every active SSE connection. Connected frontend clients receive this message and immediately re-fetch `GET /beans`, updating the catalogue without requiring a page refresh.
 
-A keepalive ping is sent every 15 seconds to prevent Railway's proxy from closing idle SSE connections due to inactivity timeouts. If the connection drops (for example, during a backend redeploy), `EventSource` automatically attempts to reconnect.
+A keepalive ping is sent every 15 seconds to prevent the host's proxy from closing idle SSE connections due to inactivity timeouts. If the connection drops (for example, during a backend redeploy), `EventSource` automatically attempts to reconnect.
 
 ### UI design direction
 
@@ -900,7 +900,8 @@ flowchart TD
 BrewStack is designed for split deployment:
 
 - Frontend on Vercel
-- Backend on Railway
+- Backend on Render (free web service, sleeps when idle)
+- Nightly scraper on GitHub Actions
 - Database and auth on Supabase
 
 ### Frontend deployment
@@ -944,7 +945,11 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
-The frontend must point `VITE_API_URL` to the deployed Railway backend URL.
+The frontend must point `VITE_API_URL` to the deployed Render backend URL.
+
+### Nightly scraping
+
+The scraper runs in `.github/workflows/scrape.yml` at 00:00 Singapore time (`0 16 * * *` UTC) and can also be triggered manually from the Actions tab. It runs `npm run scrape`, which writes to the database through `DATABASE_URL`. Add `DATABASE_URL` as a GitHub repository secret. The API server no longer runs scrapers, so `notifyClients()` is not triggered by the nightly job; clients see new data on their next fetch.
 
 ---
 
@@ -1561,8 +1566,8 @@ BrewStack/
 | ORM | Prisma |
 | Authentication | Supabase Auth |
 | Scraping | Playwright |
-| Scheduling | node-cron |
-| Backend deployment | Railway |
+| Scheduling | GitHub Actions cron |
+| Backend deployment | Render |
 | Frontend deployment | Vercel |
 | Styling | CSS |
 
