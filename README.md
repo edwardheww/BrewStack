@@ -1149,7 +1149,7 @@ Help users find specialty coffee roasters and branches around Singapore.
 
 #### Current behaviour
 
-The map uses Leaflet with OpenStreetMap tiles. Roasters are shown as colour-coded markers with a legend below the map. Clicking a marker shows the roaster name, branch, and address.
+The map uses Leaflet with Esri's Light Gray Canvas tiles (a minimal greyscale basemap that needs no API key). Roasters are shown as colour-coded markers with a legend below the map. Clicking a marker shows the roaster name, branch, and address.
 
 Users can locate themselves on the map in two ways:
 
